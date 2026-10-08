@@ -4,11 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Dashboard - TrinityGreen Energy</title>
 
     <style>
-
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -16,16 +14,16 @@
             background: #f5f7f6;
         }
 
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
         .header {
             background: #0b6b3a;
             color: white;
             padding: 20px;
             border-radius: 12px;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: auto;
         }
 
         .cards {
@@ -39,7 +37,7 @@
             background: white;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
         }
 
         .card h3 {
@@ -56,6 +54,15 @@
             padding: 20px;
             margin-top: 25px;
             border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            margin-top: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
         }
 
         button {
@@ -63,14 +70,19 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            background: #0b6b3a;
+            color: white;
         }
 
         #logoutBtn {
             margin-top: 20px;
         }
 
+        .demo-note {
+            color: #777;
+            font-size: 14px;
+        }
     </style>
-
 </head>
 
 <body>
@@ -78,13 +90,9 @@
 <div class="container">
 
     <div class="header">
-
         <h1>TrinityGreen Energy ☀️</h1>
-
         <h2>Welcome, <span id="name">Loading...</span> 👋</h2>
-
         <p id="email">Loading...</p>
-
     </div>
 
 
@@ -92,75 +100,75 @@
 
         <h2>Customer Information</h2>
 
-        <p><strong>Name:</strong> <span id="customerName">Loading...</span></p>
+        <p>
+            <strong>Name:</strong>
+            <span id="customerName">Loading...</span>
+        </p>
 
-        <p><strong>Mobile:</strong> <span id="mobile">Loading...</span></p>
+        <p>
+            <strong>Mobile:</strong>
+            <span id="mobile">Loading...</span>
+        </p>
 
-        <p><strong>Email:</strong> <span id="customerEmail">Loading...</span></p>
+        <p>
+            <strong>Email:</strong>
+            <span id="customerEmail">Loading...</span>
+        </p>
 
-        <p><strong>Address:</strong> <span id="address">Loading...</span></p>
+        <p>
+            <strong>Address:</strong>
+            <span id="address">Loading...</span>
+        </p>
 
     </div>
 
 
     <h2>Solar Overview ☀️</h2>
 
-
     <div class="cards">
 
         <div class="card">
-
             <h3>System Size</h3>
-
             <div class="value">5 kW</div>
-
             <p>Installed Capacity</p>
-
         </div>
 
-
         <div class="card">
-
             <h3>Today's Generation</h3>
-
             <div class="value">18.4 kWh</div>
-
             <p>Energy generated today</p>
-
         </div>
 
-
         <div class="card">
-
             <h3>This Month</h3>
-
             <div class="value">524 kWh</div>
-
             <p>Total generation</p>
-
         </div>
 
-
         <div class="card">
-
             <h3>Estimated Savings</h3>
-
             <div class="value">₹4,800</div>
-
             <p>This month's savings</p>
-
         </div>
-
 
         <div class="card">
-
             <h3>System Status</h3>
-
             <div class="value">🟢 Online</div>
-
             <p>System operating normally</p>
-
         </div>
+
+    </div>
+
+
+    <div class="chart-container">
+
+        <h2>Today's Solar Generation 📊</h2>
+
+        <p class="demo-note">
+            Demo generation data — real inverter data will be connected later.
+        </p>
+
+        <canvas id="generationChart"></canvas>
 
     </div>
 
@@ -169,6 +177,13 @@
 
 </div>
 
+
+<!-- Chart.js -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<!-- Firebase -->
 
 <script type="module">
 
@@ -233,30 +248,127 @@
             const data = userSnap.data();
 
 
-            document.getElementById("name").textContent = data.name;
+            document.getElementById("name").textContent =
+                data.name;
 
-            document.getElementById("customerName").textContent = data.name;
+            document.getElementById("customerName").textContent =
+                data.name;
 
-            document.getElementById("mobile").textContent = data.mobile;
+            document.getElementById("mobile").textContent =
+                data.mobile;
 
-            document.getElementById("customerEmail").textContent = data.email;
+            document.getElementById("customerEmail").textContent =
+                data.email;
 
-            document.getElementById("email").textContent = data.email;
+            document.getElementById("email").textContent =
+                data.email;
 
-            document.getElementById("address").textContent = data.address;
+            document.getElementById("address").textContent =
+                data.address;
 
         }
 
     });
 
 
-    document.getElementById("logoutBtn").addEventListener("click", () => {
+    document.getElementById("logoutBtn").addEventListener(
+        "click",
+        () => {
 
-        signOut(auth).then(() => {
+            signOut(auth).then(() => {
 
-            window.location.href = "login.html";
+                window.location.href = "login.html";
 
-        });
+            });
+
+        }
+    );
+
+</script>
+
+
+<!-- Generation Chart -->
+
+<script>
+
+    const ctx =
+        document.getElementById("generationChart");
+
+
+    new Chart(ctx, {
+
+        type: "line",
+
+        data: {
+
+            labels: [
+                "9 AM",
+                "11 AM",
+                "1 PM",
+                "3 PM",
+                "5 PM"
+            ],
+
+            datasets: [
+
+                {
+
+                    label: "Energy Generated (kWh)",
+
+                    data: [
+                        2.1,
+                        4.3,
+                        5.8,
+                        4.0,
+                        2.2
+                    ],
+
+                    tension: 0.3,
+
+                    fill: false
+
+                }
+
+            ]
+
+        },
+
+
+        options: {
+
+            responsive: true,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    title: {
+
+                        display: true,
+
+                        text: "Energy (kWh)"
+
+                    }
+
+                },
+
+                x: {
+
+                    title: {
+
+                        display: true,
+
+                        text: "Time"
+
+                    }
+
+                }
+
+            }
+
+        }
 
     });
 
