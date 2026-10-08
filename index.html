@@ -1,29 +1,916 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TrinityGreen Energy</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>TrinityGreen Energy | Solar Energy Solutions</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #18352a;
+            background: #f7faf8;
+            line-height: 1.6;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            background: white;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #08733e;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .nav-links a:hover {
+            color: #08733e;
+        }
+
+        .nav-login {
+            border: 1px solid #08733e;
+            padding: 9px 18px;
+            border-radius: 8px;
+            color: #08733e !important;
+        }
+
+        .nav-signup {
+            background: #08733e;
+            color: white !important;
+            padding: 10px 18px;
+            border-radius: 8px;
+        }
+
+        /* HERO */
+
+        .hero {
+            min-height: 620px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 80px 7%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(3, 69, 36, 0.94),
+                    rgba(5, 120, 65, 0.72)
+                ),
+                linear-gradient(
+                    135deg,
+                    #dff5e7,
+                    #ffffff
+                );
+
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 720px;
+        }
+
+        .hero-tag {
+            display: inline-block;
+
+            background: rgba(255,255,255,0.15);
+
+            padding: 8px 15px;
+
+            border-radius: 30px;
+
+            margin-bottom: 20px;
+
+            font-size: 14px;
+        }
+
+        .hero h1 {
+            font-size: 58px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: #d7ff87;
+        }
+
+        .hero p {
+            font-size: 19px;
+            max-width: 650px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+
+            text-decoration: none;
+
+            padding: 14px 24px;
+
+            border-radius: 10px;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #08733e;
+        }
+
+        .btn-secondary {
+            border: 1px solid white;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* SECTION */
+
+        section {
+            padding: 75px 7%;
+        }
+
+        .section-title {
+            text-align: center;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            margin-bottom: 12px;
+            color: #123d2a;
+        }
+
+        .section-title p {
+            color: #666;
+        }
+
+        /* SERVICES */
+
+        .services {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(230px, 1fr));
+
+            gap: 25px;
+
+            margin-top: 45px;
+        }
+
+        .service-card {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.07);
+
+            transition: 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .service-icon {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .service-card h3 {
+            margin-bottom: 10px;
+            color: #123d2a;
+        }
+
+        .service-card p {
+            color: #666;
+        }
+
+        /* WHY US */
+
+        .why-us {
+            background: #eaf6ee;
+        }
+
+        .why-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+
+            gap: 25px;
+
+            margin-top: 45px;
+        }
+
+        .why-card {
+            text-align: center;
+            padding: 25px;
+        }
+
+        .why-card strong {
+            display: block;
+
+            font-size: 28px;
+
+            color: #08733e;
+
+            margin-bottom: 5px;
+        }
+
+        /* PROCESS */
+
+        .process {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(200px, 1fr));
+
+            gap: 25px;
+
+            margin-top: 45px;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            width: 55px;
+            height: 55px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            background: #08733e;
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* CTA */
+
+        .cta {
+            margin: 0 7% 70px;
+
+            padding: 55px 40px;
+
+            border-radius: 20px;
+
+            text-align: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #075d32,
+                    #0b9b55
+                );
+
+            color: white;
+        }
+
+        .cta h2 {
+            font-size: 35px;
+            margin-bottom: 12px;
+        }
+
+        .cta p {
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: #123d2a;
+            color: white;
+
+            padding: 45px 7% 25px;
+        }
+
+        .footer-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(200px, 1fr));
+
+            gap: 30px;
+
+            margin-bottom: 30px;
+        }
+
+        footer h3 {
+            margin-bottom: 12px;
+        }
+
+        footer p {
+            color: #c9ddd2;
+        }
+
+        footer a {
+            color: #c9ddd2;
+            text-decoration: none;
+            display: block;
+            margin: 6px 0;
+        }
+
+        .copyright {
+            border-top: 1px solid rgba(255,255,255,0.15);
+
+            padding-top: 20px;
+
+            text-align: center;
+
+            color: #b8cec2;
+
+            font-size: 14px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 750px) {
+
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .hero {
+                min-height: 550px;
+                padding: 60px 7%;
+            }
+
+            .hero h1 {
+                font-size: 40px;
+            }
+
+            .hero p {
+                font-size: 17px;
+            }
+
+            section {
+                padding: 55px 7%;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <h1>TrinityGreen Energy</h1>
 
-    <h2>Powering a Greener Future ☀️</h2>
+<!-- NAVIGATION -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        TrinityGreen Energy ☀️
+    </div>
+
+    <div class="nav-links">
+
+        <a href="#services">
+            Services
+        </a>
+
+        <a href="#why-us">
+            Why Us
+        </a>
+
+        <a href="#process">
+            Process
+        </a>
+
+        <a href="#contact">
+            Contact
+        </a>
+
+        <a href="login.html"
+           class="nav-login">
+            Login
+        </a>
+
+        <a href="signup.html"
+           class="nav-signup">
+            Create Account
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-tag">
+            ☀️ Clean Energy • Smart Technology • Sustainable Future
+        </div>
+
+        <h1>
+            Power Your Future
+            With <span>Solar Energy</span>
+        </h1>
+
+        <p>
+            TrinityGreen Energy provides reliable solar
+            solutions for homes, businesses and industries.
+            From consultation and installation to monitoring
+            and support — we help you make the switch to
+            clean energy.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="signup.html"
+               class="btn btn-primary">
+                Get Started
+            </a>
+
+            <a href="#services"
+               class="btn btn-secondary">
+                Explore Solutions
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- SERVICES -->
+
+<section id="services">
+
+    <div class="section-title">
+
+        <h2>
+            Our Solar Solutions
+        </h2>
+
+        <p>
+            Complete solar energy services designed
+            for residential, commercial and industrial
+            requirements.
+        </p>
+
+    </div>
+
+
+    <div class="services">
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🏠
+            </div>
+
+            <h3>
+                Residential Solar
+            </h3>
+
+            <p>
+                Reduce electricity bills with efficient
+                rooftop solar systems designed for homes.
+            </p>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🏢
+            </div>
+
+            <h3>
+                Commercial Solar
+            </h3>
+
+            <p>
+                Smart solar solutions for offices,
+                shops, schools and commercial buildings.
+            </p>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🏭
+            </div>
+
+            <h3>
+                Industrial Solar
+            </h3>
+
+            <p>
+                Large-scale solar and EPC solutions
+                for industrial energy requirements.
+            </p>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🔧
+            </div>
+
+            <h3>
+                Installation & EPC
+            </h3>
+
+            <p>
+                Professional project development,
+                installation, commissioning and support.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- WHY US -->
+
+<section class="why-us"
+         id="why-us">
+
+    <div class="section-title">
+
+        <h2>
+            Why Choose TrinityGreen?
+        </h2>
+
+        <p>
+            We combine solar expertise, technology
+            and customer support to deliver dependable
+            energy solutions.
+        </p>
+
+    </div>
+
+
+    <div class="why-grid">
+
+
+        <div class="why-card">
+
+            <strong>
+                ☀️
+            </strong>
+
+            <h3>
+                Clean Energy
+            </h3>
+
+            <p>
+                Build a cleaner and more sustainable future.
+            </p>
+
+        </div>
+
+
+        <div class="why-card">
+
+            <strong>
+                ⚡
+            </strong>
+
+            <h3>
+                Reliable Systems
+            </h3>
+
+            <p>
+                Efficient solar systems designed for
+                long-term performance.
+            </p>
+
+        </div>
+
+
+        <div class="why-card">
+
+            <strong>
+                📊
+            </strong>
+
+            <h3>
+                Smart Monitoring
+            </h3>
+
+            <p>
+                Track your solar generation and savings
+                through your customer dashboard.
+            </p>
+
+        </div>
+
+
+        <div class="why-card">
+
+            <strong>
+                🛠️
+            </strong>
+
+            <h3>
+                Customer Support
+            </h3>
+
+            <p>
+                Get assistance for installation,
+                maintenance and service requirements.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- PROCESS -->
+
+<section id="process">
+
+    <div class="section-title">
+
+        <h2>
+            How It Works
+        </h2>
+
+        <p>
+            Getting started with solar is simple.
+        </p>
+
+    </div>
+
+
+    <div class="process">
+
+
+        <div class="step">
+
+            <div class="step-number">
+                1
+            </div>
+
+            <h3>
+                Consultation
+            </h3>
+
+            <p>
+                Understand your energy requirements.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <div class="step-number">
+                2
+            </div>
+
+            <h3>
+                Site Assessment
+            </h3>
+
+            <p>
+                Evaluate your location and solar potential.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <div class="step-number">
+                3
+            </div>
+
+            <h3>
+                Installation
+            </h3>
+
+            <p>
+                Professional solar system installation.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <div class="step-number">
+                4
+            </div>
+
+            <h3>
+                Monitoring
+            </h3>
+
+            <p>
+                Track generation, savings and system status.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- CTA -->
+
+<div class="cta"
+     id="contact">
+
+    <h2>
+        Ready to Switch to Solar? ☀️
+    </h2>
 
     <p>
-        Smart and sustainable solar energy solutions for homes,
-        businesses, and industries.
+        Create your account and start your
+        solar journey with TrinityGreen Energy.
     </p>
 
-<a href="login.html">
-    <button>Login</button>
-</a>
+    <a href="signup.html"
+       class="btn btn-primary">
 
-<a href="signup.html">
-    <button>Create Account</button>
-</a>
+        Create Customer Account
+
+    </a>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <div class="footer-grid">
+
+
+        <div>
+
+            <h3>
+                TrinityGreen Energy ☀️
+            </h3>
+
+            <p>
+                Smart and sustainable solar energy
+                solutions for a greener future.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="#services">
+                Services
+            </a>
+
+            <a href="#why-us">
+                Why Us
+            </a>
+
+            <a href="#process">
+                How It Works
+            </a>
+
+        </div>
+
+
+        <div>
+
+            <h3>
+                Customer
+            </h3>
+
+            <a href="login.html">
+                Customer Login
+            </a>
+
+            <a href="signup.html">
+                Create Account
+            </a>
+
+        </div>
+
+
+        <div>
+
+            <h3>
+                Contact
+            </h3>
+
+            <p>
+                📞 Contact TrinityGreen Energy
+            </p>
+
+            <p>
+                ☀️ Solar • EPC • Installation
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="copyright">
+
+        © 2026 TrinityGreen Energy.
+        All rights reserved.
+
+    </div>
+
+</footer>
+
 
 </body>
+
 </html>
