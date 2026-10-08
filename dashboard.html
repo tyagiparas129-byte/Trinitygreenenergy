@@ -4,120 +4,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Dashboard - TrinityGreen Energy</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f7f6;
+        }
+
+        .header {
+            background: #0b6b3a;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .customer {
+            background: white;
+            padding: 20px;
+            margin-top: 25px;
+            border-radius: 12px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #logoutBtn {
+            margin-top: 20px;
+        }
+
+    </style>
+
 </head>
 
 <body>
 
-    <h1>TrinityGreen Energy</h1>
-    <h2>Welcome 👋</h2>
+<div class="container">
 
-    <h3>Customer Information</h3>
+    <div class="header">
 
-    <p><strong>Name:</strong> <span id="name">Loading...</span></p>
-    <p><strong>Mobile:</strong> <span id="mobile">Loading...</span></p>
-    <p><strong>Email:</strong> <span id="email">Loading...</span></p>
-    <p><strong>Address:</strong> <span id="address">Loading...</span></p>
+        <h1>TrinityGreen Energy ☀️</h1>
 
-    <hr>
+        <h2>Welcome, <span id="name">Loading...</span> 👋</h2>
 
-    <h3>Your Solar System</h3>
-    <p><strong>System Size:</strong> 5 kW</p>
+        <p id="email">Loading...</p>
 
-    <h3>Today's Generation</h3>
-    <p>18.4 kWh</p>
+    </div>
 
-    <h3>This Month</h3>
-    <p>524 kWh</p>
 
-    <h3>Estimated Savings</h3>
-    <p>₹4,800</p>
+    <div class="customer">
 
-    <h3>System Status</h3>
-    <p>🟢 Online</p>
+        <h2>Customer Information</h2>
 
-    <br>
+        <p><strong>Name:</strong> <span id="customerName">Loading...</span></p>
+
+        <p><strong>Mobile:</strong> <span id="mobile">Loading...</span></p>
+
+        <p><strong>Email:</strong> <span id="customerEmail">Loading...</span></p>
+
+        <p><strong>Address:</strong> <span id="address">Loading...</span></p>
+
+    </div>
+
+
+    <h2>Solar Overview ☀️</h2>
+
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h3>System Size</h3>
+
+            <div class="value">5 kW</div>
+
+            <p>Installed Capacity</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Today's Generation</h3>
+
+            <div class="value">18.4 kWh</div>
+
+            <p>Energy generated today</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>This Month</h3>
+
+            <div class="value">524 kWh</div>
+
+            <p>Total generation</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Estimated Savings</h3>
+
+            <div class="value">₹4,800</div>
+
+            <p>This month's savings</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>System Status</h3>
+
+            <div class="value">🟢 Online</div>
+
+            <p>System operating normally</p>
+
+        </div>
+
+    </div>
+
 
     <button id="logoutBtn">Logout</button>
 
-
-    <script type="module">
-
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-
-        import {
-            getAuth,
-            onAuthStateChanged,
-            signOut
-        } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
-
-        import {
-            getFirestore,
-            doc,
-            getDoc
-        } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+</div>
 
 
-        const firebaseConfig = {
+<script type="module">
 
-            apiKey: "AIzaSyD5827waZLxQ72mJvcPKuGXeppdLES1QxA",
-            authDomain: "trinity-green-energy.firebaseapp.com",
-            projectId: "trinity-green-energy",
-            storageBucket: "trinity-green-energy.firebasestorage.app",
-            messagingSenderId: "186084209724",
-            appId: "1:186084209724:web:4a187b8e51417b21d27f39"
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 
-        };
+    import {
+        getAuth,
+        onAuthStateChanged,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 
-
-        const app = initializeApp(firebaseConfig);
-
-        const auth = getAuth(app);
-
-        const db = getFirestore(app);
-
-
-        onAuthStateChanged(auth, async (user) => {
-
-            if (!user) {
-
-                window.location.href = "login.html";
-
-                return;
-
-            }
+    import {
+        getFirestore,
+        doc,
+        getDoc
+    } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
 
-            const userRef = doc(db, "users", user.uid);
+    const firebaseConfig = {
 
-            const userSnap = await getDoc(userRef);
+        apiKey: "AIzaSyD5827waZLxQ72mJvcPKuGXeppdLES1QxA",
+
+        authDomain: "trinity-green-energy.firebaseapp.com",
+
+        projectId: "trinity-green-energy",
+
+        storageBucket: "trinity-green-energy.firebasestorage.app",
+
+        messagingSenderId: "186084209724",
+
+        appId: "1:186084209724:web:4a187b8e51417b21d27f39"
+
+    };
 
 
-            if (userSnap.exists()) {
+    const app = initializeApp(firebaseConfig);
 
-                const data = userSnap.data();
+    const auth = getAuth(app);
 
-                document.getElementById("name").textContent = data.name;
-                document.getElementById("mobile").textContent = data.mobile;
-                document.getElementById("email").textContent = data.email;
-                document.getElementById("address").textContent = data.address;
+    const db = getFirestore(app);
 
-            }
+
+    onAuthStateChanged(auth, async (user) => {
+
+        if (!user) {
+
+            window.location.href = "login.html";
+
+            return;
+
+        }
+
+
+        const userRef = doc(db, "users", user.uid);
+
+        const userSnap = await getDoc(userRef);
+
+
+        if (userSnap.exists()) {
+
+            const data = userSnap.data();
+
+
+            document.getElementById("name").textContent = data.name;
+
+            document.getElementById("customerName").textContent = data.name;
+
+            document.getElementById("mobile").textContent = data.mobile;
+
+            document.getElementById("customerEmail").textContent = data.email;
+
+            document.getElementById("email").textContent = data.email;
+
+            document.getElementById("address").textContent = data.address;
+
+        }
+
+    });
+
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+
+        signOut(auth).then(() => {
+
+            window.location.href = "login.html";
 
         });
 
+    });
 
-        document.getElementById("logoutBtn").addEventListener("click", () => {
-
-            signOut(auth).then(() => {
-
-                window.location.href = "login.html";
-
-            });
-
-        });
-
-    </script>
+</script>
 
 </body>
 
