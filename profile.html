@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>My Profile | TrinityGreen Energy</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7f5;
+    color: #18352a;
+}
+
+/* NAVBAR */
+
+.navbar {
+    background: white;
+    padding: 16px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #08733e;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #444;
+    font-weight: 600;
+}
+
+.nav-links a:hover {
+    color: #08733e;
+}
+
+.nav-active {
+    color: #08733e !important;
+}
+
+/* AUTH GUARD: hide page content until login state is known */
+
+body.auth-pending .container {
+    visibility: hidden;
+}
+
+/* MAIN */
+
+.container {
+    max-width: 760px;
+    margin: auto;
+    padding: 30px 20px 60px;
+}
+
+/* HEADER CARD */
+
+.profile-header {
+    background:
+        linear-gradient(
+            135deg,
+            #075d32,
+            #0b9652
+        );
+
+    color: white;
+
+    padding: 30px;
+
+    border-radius: 20px;
+
+    display: flex;
+    align-items: center;
+    gap: 22px;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.12);
+}
+
+.big-avatar {
+    width: 76px;
+    height: 76px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.18);
+
+    border: 2px solid rgba(255,255,255,0.6);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.profile-header h1 {
+    font-size: 28px;
+    margin-bottom: 4px;
+    overflow-wrap: anywhere;
+}
+
+.profile-header p {
+    opacity: 0.9;
+    overflow-wrap: anywhere;
+}
+
+/* NOTICE */
+
+.note {
+    background: #fff8e1;
+    border: 1px solid #f0d98a;
+    color: #7a5b00;
+
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    margin-bottom: 18px;
+
+    font-size: 14px;
+}
+
+/* DETAILS BOX */
+
+.box {
+    background: white;
+
+    padding: 24px;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 3px 15px rgba(0,0,0,0.06);
+}
+
+.box h2 {
+    margin-bottom: 5px;
+}
+
+.box-subtitle {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid #eee;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #888;
+    flex-shrink: 0;
+}
+
+.info-value {
+    font-weight: bold;
+    text-align: right;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+}
+
+/* BUTTONS */
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    margin-top: 25px;
+}
+
+.btn {
+    display: inline-block;
+
+    padding: 12px 22px;
+
+    border-radius: 9px;
+
+    font-size: 15px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: #08733e;
+    color: white;
+    border: 1px solid #08733e;
+}
+
+.btn-primary:hover {
+    background: #0b9652;
+}
+
+.btn-logout {
+    background: white;
+    color: #c62828;
+    border: 1px solid #e2bcbc;
+}
+
+.btn-logout:hover {
+    background: #fff4f4;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .navbar {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px;
+    }
+
+    .info-row {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .info-value {
+        text-align: left;
+    }
+
+    .container {
+        padding: 20px 14px 50px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body class="auth-pending">
+
+
+<!-- NAVIGATION -->
+
+<nav class="navbar">
+
+    <a href="index.html" class="logo">
+        TrinityGreen Energy ☀️
+    </a>
+
+    <div class="nav-links">
+
+        <a href="index.html">Home</a>
+
+        <a href="dashboard.html">Dashboard</a>
+
+        <a href="profile.html" class="nav-active">My Profile</a>
+
+    </div>
+
+</nav>
+
+
+<!-- MAIN -->
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="profile-header">
+
+        <div class="big-avatar" id="avatar">U</div>
+
+        <div>
+            <h1 id="headerName">Customer</h1>
+            <p id="headerEmail"></p>
+        </div>
+
+    </div>
+
+
+    <!-- NOTICE (only shown if details could not be loaded) -->
+
+    <div class="note" id="note" hidden>
+        Some of your saved details could not be loaded right now.
+        Please refresh the page in a moment.
+    </div>
+
+
+    <!-- DETAILS -->
+
+    <div class="box">
+
+        <h2>My Details</h2>
+
+        <p class="box-subtitle">
+            The information saved with your TrinityGreen Energy account
+        </p>
+
+
+        <div class="info-row">
+            <span class="info-label">Full Name</span>
+            <span class="info-value" id="pName">Loading...</span>
+        </div>
+
+        <div class="info-row">
+            <span class="info-label">Email</span>
+            <span class="info-value" id="pEmail">Loading...</span>
+        </div>
+
+        <div class="info-row">
+            <span class="info-label">Mobile</span>
+            <span class="info-value" id="pMobile">Loading...</span>
+        </div>
+
+        <div class="info-row">
+            <span class="info-label">Address</span>
+            <span class="info-value" id="pAddress">Loading...</span>
+        </div>
+
+        <div class="info-row">
+            <span class="info-label">Member Since</span>
+            <span class="info-value" id="pSince">Loading...</span>
+        </div>
+
+    </div>
+
+
+    <!-- BUTTONS -->
+
+    <div class="actions">
+
+        <a href="dashboard.html" class="btn btn-primary">
+            Back to Dashboard
+        </a>
+
+        <button type="button" class="btn btn-logout" id="logoutBtn">
+            Logout
+        </button>
+
+    </div>
+
+
+</div>
+
+
+<script type="module">
+
+    // Firebase setup comes from the shared file
+    import { auth, db } from "./firebase-config.js";
+
+    import {
+        onAuthStateChanged,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+
+    import {
+        doc,
+        getDoc
+    } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+
+
+    function setText(id, text) {
+        document.getElementById(id).textContent = text;
+    }
+
+
+    onAuthStateChanged(auth, async (user) => {
+
+        // Not logged in: go to the login page
+        if (!user) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        let data = {};
+
+        try {
+            const snap = await getDoc(doc(db, "users", user.uid));
+
+            if (snap.exists()) {
+                data = snap.data();
+            }
+        } catch (err) {
+            console.error("Could not load profile:", err);
+            document.getElementById("note").hidden = false;
+        }
+
+        const email = user.email || data.email || "Not provided";
+
+        const name = data.name ||
+            (user.email ? user.email.split("@")[0] : "Customer");
+
+        // "Member since": saved date, or the date the login account was made
+        let created = null;
+
+        if (data.createdAt && typeof data.createdAt.toDate === "function") {
+            created = data.createdAt.toDate();
+        } else if (user.metadata && user.metadata.creationTime) {
+            created = new Date(user.metadata.creationTime);
+        }
+
+        const since = created
+            ? created.toLocaleDateString("en-IN", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric"
+              })
+            : "Not available";
+
+        setText("avatar", (name.trim()[0] || "U").toUpperCase());
+        setText("headerName", name);
+        setText("headerEmail", email);
+
+        setText("pName", name);
+        setText("pEmail", email);
+        setText("pMobile", data.mobile || "Not provided");
+        setText("pAddress", data.address || "Not provided");
+        setText("pSince", since);
+
+        // Logged in: show the page
+        document.body.classList.remove("auth-pending");
+    });
+
+
+    /* LOGOUT */
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+
+        try {
+            await signOut(auth);
+        } catch (err) {
+            console.error("Logout failed:", err);
+        }
+
+        window.location.replace("index.html");
+    });
+
+</script>
+
+
+</body>
+
+</html>
