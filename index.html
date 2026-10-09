@@ -416,6 +416,150 @@
 
         }
 
+    
+        /* PROFILE MENU (shown when logged in) */
+
+        [hidden] {
+            display: none !important;
+        }
+
+        .auth-area {
+            display: flex;
+            align-items: center;
+        }
+
+        .auth-area.auth-pending {
+            visibility: hidden;
+        }
+
+        .guest-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .profile-menu {
+            position: relative;
+        }
+
+        .avatar-btn {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            border: 2px solid #08733e;
+
+            background: #08733e;
+            color: white;
+
+            font-size: 17px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            transition: 0.2s;
+        }
+
+        .avatar-btn:hover {
+            background: #0b9652;
+        }
+
+        .avatar-btn:focus-visible {
+            outline: 3px solid #9bd8b4;
+            outline-offset: 2px;
+        }
+
+        .profile-dropdown {
+            display: none;
+
+            position: absolute;
+            right: 0;
+            top: calc(100% + 10px);
+
+            min-width: 220px;
+            max-width: calc(100vw - 32px);
+
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 8px;
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+
+            z-index: 1100;
+        }
+
+        .profile-dropdown.open {
+            display: block;
+        }
+
+        .pd-head {
+            padding: 10px 12px 12px;
+
+            border-bottom: 1px solid #eee;
+
+            margin-bottom: 6px;
+        }
+
+        .pd-name {
+            font-weight: bold;
+            color: #123d2a;
+            overflow-wrap: anywhere;
+        }
+
+        .pd-email {
+            font-size: 13px;
+            color: #777;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-dropdown a,
+        .profile-dropdown .pd-item {
+            display: block;
+
+            width: 100%;
+
+            padding: 10px 12px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: none;
+
+            text-align: left;
+            text-decoration: none;
+
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+
+            color: #333;
+
+            cursor: pointer;
+        }
+
+        .profile-dropdown a:hover,
+        .profile-dropdown .pd-item:hover {
+            background: #eaf6ee;
+            color: #08733e;
+        }
+
+        .profile-dropdown .pd-logout {
+            color: #c62828;
+        }
+
+        .profile-dropdown .pd-logout:hover {
+            background: #fff4f4;
+            color: #c62828;
+        }
+
     </style>
 
 </head>
@@ -450,15 +594,61 @@
             Contact
         </a>
 
-        <a href="login.html"
-           class="nav-login">
-            Login
-        </a>
+        <div class="auth-area auth-pending" id="authArea">
 
-        <a href="signup.html"
-           class="nav-signup">
-            Create Account
-        </a>
+            <!-- Shown when logged out -->
+
+            <div class="guest-links" id="guestLinks">
+
+                <a href="login.html"
+                   class="nav-login">
+                    Login
+                </a>
+
+                <a href="signup.html"
+                   class="nav-signup">
+                    Create Account
+                </a>
+
+            </div>
+
+
+            <!-- Shown when logged in -->
+
+            <div class="profile-menu" id="userMenu" hidden>
+
+                <button type="button"
+                        class="avatar-btn"
+                        id="avatarBtn"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        aria-label="Open profile menu">
+                    <span id="avatarInitial">U</span>
+                </button>
+
+                <div class="profile-dropdown"
+                     id="profileDropdown">
+
+                    <div class="pd-head">
+                        <div class="pd-name" id="pdName">Customer</div>
+                        <div class="pd-email" id="pdEmail"></div>
+                    </div>
+
+                    <a href="profile.html">
+                        My Profile
+                    </a>
+
+                    <button type="button"
+                            class="pd-item pd-logout"
+                            id="logoutBtn">
+                        Logout
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -491,6 +681,7 @@
         <div class="hero-buttons">
 
             <a href="signup.html"
+               id="heroCta"
                class="btn btn-primary">
                 Get Started
             </a>
@@ -807,12 +998,13 @@
         Ready to Switch to Solar? ☀️
     </h2>
 
-    <p>
+    <p id="ctaText">
         Create your account and start your
         solar journey with TrinityGreen Energy.
     </p>
 
     <a href="signup.html"
+       id="ctaBtn"
        class="btn btn-primary">
 
         Create Customer Account
@@ -870,11 +1062,11 @@
                 Customer
             </h3>
 
-            <a href="login.html">
+            <a href="login.html" id="footLogin">
                 Customer Login
             </a>
 
-            <a href="signup.html">
+            <a href="signup.html" id="footSignup">
                 Create Account
             </a>
 
@@ -909,6 +1101,173 @@
     </div>
 
 </footer>
+
+
+<script type="module">
+
+    // Firebase setup comes from the shared file
+    import { auth, db } from "./firebase-config.js";
+
+    import {
+        onAuthStateChanged,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+
+    import {
+        doc,
+        getDoc
+    } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+
+
+    const authArea      = document.getElementById("authArea");
+    const guestLinks    = document.getElementById("guestLinks");
+    const userMenu      = document.getElementById("userMenu");
+    const avatarBtn     = document.getElementById("avatarBtn");
+    const avatarInitial = document.getElementById("avatarInitial");
+    const dropdown      = document.getElementById("profileDropdown");
+    const pdName        = document.getElementById("pdName");
+    const pdEmail       = document.getElementById("pdEmail");
+    const logoutBtn     = document.getElementById("logoutBtn");
+
+    const heroCta       = document.getElementById("heroCta");
+    const ctaText       = document.getElementById("ctaText");
+    const ctaBtn        = document.getElementById("ctaBtn");
+    const footLogin     = document.getElementById("footLogin");
+    const footSignup    = document.getElementById("footSignup");
+
+
+    /* Open / close the profile dropdown */
+
+    function openMenu() {
+        dropdown.classList.add("open");
+        avatarBtn.setAttribute("aria-expanded", "true");
+    }
+
+    function closeMenu() {
+        dropdown.classList.remove("open");
+        avatarBtn.setAttribute("aria-expanded", "false");
+    }
+
+    avatarBtn.addEventListener("click", () => {
+        if (dropdown.classList.contains("open")) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    });
+
+    // Click anywhere else, or press Escape, to close it
+    document.addEventListener("click", (event) => {
+        if (!userMenu.contains(event.target)) {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeMenu();
+        }
+    });
+
+
+    /* Page for visitors who are NOT logged in */
+
+    function showGuest() {
+
+        guestLinks.hidden = false;
+        userMenu.hidden = true;
+        closeMenu();
+
+        heroCta.textContent = "Get Started";
+        heroCta.href = "signup.html";
+
+        ctaText.textContent =
+            "Create your account and start your solar journey with TrinityGreen Energy.";
+        ctaBtn.textContent = "Create Customer Account";
+        ctaBtn.href = "signup.html";
+
+        footLogin.textContent = "Customer Login";
+        footLogin.href = "login.html";
+        footSignup.textContent = "Create Account";
+        footSignup.href = "signup.html";
+
+        authArea.classList.remove("auth-pending");
+    }
+
+
+    /* Page for visitors who ARE logged in */
+
+    function showUser(name, email) {
+
+        guestLinks.hidden = true;
+        userMenu.hidden = false;
+
+        avatarInitial.textContent = (name.trim()[0] || "U").toUpperCase();
+        pdName.textContent = name;
+        pdEmail.textContent = email;
+
+        heroCta.textContent = "Go to Dashboard";
+        heroCta.href = "dashboard.html";
+
+        ctaText.textContent =
+            "See your solar generation, savings and service requests on your dashboard.";
+        ctaBtn.textContent = "Open My Dashboard";
+        ctaBtn.href = "dashboard.html";
+
+        footLogin.textContent = "My Dashboard";
+        footLogin.href = "dashboard.html";
+        footSignup.textContent = "My Profile";
+        footSignup.href = "profile.html";
+
+        authArea.classList.remove("auth-pending");
+    }
+
+
+    /* Decide which version to show */
+
+    onAuthStateChanged(auth, async (user) => {
+
+        if (!user) {
+            showGuest();
+            return;
+        }
+
+        let name = user.displayName ||
+            (user.email ? user.email.split("@")[0] : "Customer");
+
+        try {
+            const snap = await getDoc(doc(db, "users", user.uid));
+
+            if (snap.exists() && snap.data().name) {
+                name = snap.data().name;
+            }
+        } catch (err) {
+            console.error("Could not load profile:", err);
+        }
+
+        showUser(name, user.email || "");
+    });
+
+    // Safety net: if Firebase is slow, show the normal Login buttons
+    setTimeout(() => {
+        authArea.classList.remove("auth-pending");
+    }, 3000);
+
+
+    /* Logout (stay on the home page; it switches back to Login buttons) */
+
+    logoutBtn.addEventListener("click", async () => {
+
+        try {
+            await signOut(auth);
+        } catch (err) {
+            console.error("Logout failed:", err);
+        }
+
+        closeMenu();
+    });
+
+</script>
 
 
 </body>
