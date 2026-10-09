@@ -431,6 +431,7 @@
         .auth-area {
             display: flex;
             align-items: center;
+            gap: 25px;
         }
 
         .auth-area.auth-pending {
@@ -730,6 +731,13 @@
                 </a>
 
             </div>
+
+
+            <!-- Dashboard link (logged in only) -->
+
+            <a href="dashboard.html" id="navDashboard" hidden>
+                Dashboard
+            </a>
 
 
             <!-- Shown when logged in -->
@@ -1367,6 +1375,7 @@
     const pdName        = document.getElementById("pdName");
     const pdEmail       = document.getElementById("pdEmail");
     const logoutBtn     = document.getElementById("logoutBtn");
+    const navDashboard  = document.getElementById("navDashboard");
 
     const heroCta       = document.getElementById("heroCta");
     const ctaText       = document.getElementById("ctaText");
@@ -1414,6 +1423,7 @@
     function showGuest() {
 
         guestLinks.hidden = false;
+        navDashboard.hidden = true;
         userMenu.hidden = true;
         closeMenu();
 
@@ -1439,6 +1449,7 @@
     function showUser(name, email) {
 
         guestLinks.hidden = true;
+        navDashboard.hidden = false;
         userMenu.hidden = false;
 
         avatarInitial.textContent = (name.trim()[0] || "U").toUpperCase();
