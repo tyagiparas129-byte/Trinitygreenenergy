@@ -543,11 +543,11 @@
     }
 
 
-    /* If the person is already logged in, skip this page */
+    /* If the person is already logged in, send them to the home page */
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            window.location.replace("dashboard.html");
+            window.location.replace("index.html");
         }
     });
 
@@ -570,7 +570,7 @@
             await signInWithEmailAndPassword(auth, email, password);
 
             showMessage("Login successful!", false);
-            window.location.replace("dashboard.html");
+            window.location.replace("index.html");
 
         } catch (error) {
 
