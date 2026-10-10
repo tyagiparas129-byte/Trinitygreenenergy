@@ -525,6 +525,55 @@ body.auth-pending .container {
     overflow-wrap: anywhere;
 }
 
+
+/* STEP 4: enquiries, service requests, project progress */
+
+#projectView { margin-top: 25px; }
+.stack { display: grid; gap: 25px; margin-top: 25px; }
+.empty { color: #777; }
+.empty a { color: #08733e; font-weight: bold; }
+.list { list-style: none; display: grid; gap: 10px; }
+.list li {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 14px; flex-wrap: wrap;
+    padding: 12px 14px; border: 1px solid #e4ece7; border-radius: 10px;
+}
+.list .what { font-weight: bold; }
+.list .when { color: #888; font-size: 13px; }
+.tag {
+    background: #eaf6ee; color: #08733e; font-weight: bold; font-size: 13px;
+    padding: 4px 11px; border-radius: 999px; white-space: nowrap;
+}
+.stages { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.stages li {
+    flex: 1 1 110px; text-align: center; font-size: 13px; font-weight: bold;
+    padding: 10px 8px; border-radius: 10px; background: #f0f4f1; color: #888;
+}
+.stages li.done { background: #d9f0e2; color: #08733e; }
+.stages li.current { background: #08733e; color: #fff; }
+.project-note { margin-top: 14px; color: #555; }
+.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 16px; }
+.form label { display: block; font-weight: bold; font-size: 14px; margin: 14px 0 5px; }
+.form select, .form textarea {
+    width: 100%; padding: 12px 14px; border: 1px solid #c9d8cf; border-radius: 8px;
+    font-size: 16px; font-family: Arial, sans-serif; background: #fff;
+}
+.form textarea { min-height: 90px; resize: vertical; }
+.form select:focus, .form textarea:focus { outline: 3px solid #9bd8b4; border-color: #08733e; }
+.form-msg { min-height: 22px; margin-top: 12px; font-size: 15px; }
+.form-msg.ok { color: #08733e; }
+.form-msg.bad { color: #c62828; }
+.form .service-btn { margin-top: 14px; }
+.service-btn:disabled { opacity: 0.6; cursor: default; }
+.link-btn {
+    display: inline-block; background: #08733e; color: #fff; text-decoration: none;
+    padding: 10px 16px; border-radius: 8px; font-weight: bold; margin-top: 12px;
+}
+.subhead { margin: 22px 0 10px; font-size: 16px; }
+[hidden] { display: none !important; }
+
+.actions { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+
 </style>
 
 </head>
@@ -555,11 +604,11 @@ body.auth-pending .container {
         Dashboard
         </a>
 
-        <a href="#">
+        <a href="residential.html#calc">
         Savings
         </a>
 
-        <a href="#">
+        <a href="#service">
         Service
         </a>
 
@@ -590,8 +639,8 @@ body.auth-pending .container {
             </span> 👋
         </h1>
 
-        <p>
-            Here's how your solar system is performing today.
+        <p id="welcomeText">
+            Here is where you can follow your enquiries, projects and service requests.
         </p>
 
     </div>
@@ -603,21 +652,44 @@ body.auth-pending .container {
 </div>
 
 
+<!-- PROJECT PROGRESS (shown when a project exists) -->
+
+<div class="box" id="projectBox" hidden>
+    <h2 id="projectTitle">My Project</h2>
+    <p class="box-subtitle" id="projectSub"></p>
+    <ol class="stages" id="stages"></ol>
+    <p class="project-note" id="projectNote"></p>
+</div>
+
+
+<!-- MY ENQUIRIES -->
+
+<div class="box" id="enquiriesBox" style="margin-top:25px">
+    <h2>My Enquiries</h2>
+    <p class="box-subtitle">Requests you have sent to TrinityGreen Energy.</p>
+    <div id="enquiriesBody"><p class="empty">Loading...</p></div>
+</div>
+
+
+<!-- SYSTEM DETAILS (shown when a project exists) -->
+
+<div id="projectView" hidden>
+
 <!-- STATUS -->
 
 <div class="status-bar">
 
     <div>
 
-        System Status:
+        Live monitoring:
         <span class="online">
-            🟢 Online
+            Not connected yet
         </span>
 
     </div>
 
     <div class="demo">
-        Demo monitoring data
+        Figures below are sample data
     </div>
 
 </div>
@@ -632,7 +704,7 @@ body.auth-pending .container {
     </h2>
 
     <p>
-        A quick look at your solar system performance.
+        Sample figures until live readings from your system are connected.
     </p>
 
 </div>
@@ -677,7 +749,7 @@ body.auth-pending .container {
         </div>
 
         <div class="card-description">
-            Energy generated today
+            Sample figure
         </div>
 
     </div>
@@ -698,7 +770,7 @@ body.auth-pending .container {
         </div>
 
         <div class="card-description">
-            Current month
+            Sample figure
         </div>
 
     </div>
@@ -719,7 +791,7 @@ body.auth-pending .container {
         </div>
 
         <div class="card-description">
-            This month
+            Sample figure
         </div>
 
     </div>
@@ -783,11 +855,11 @@ body.auth-pending .container {
         <div class="info-row">
 
             <span class="info-label">
-                System Status
+                Monitoring
             </span>
 
             <span class="info-value">
-                🟢 Online
+                Sample data
             </span>
 
         </div>
@@ -837,7 +909,7 @@ body.auth-pending .container {
     </h2>
 
     <p class="box-subtitle">
-        Estimated savings from your solar system
+        Sample figure only. Your real savings will be shown once live readings are connected.
     </p>
 
     <div class="savings-number" id="savingsNumber">
@@ -845,10 +917,13 @@ body.auth-pending .container {
     </div>
 
     <p>
-        Estimated savings this month
+        Sample estimate for this month
     </p>
 
 </div>
+
+</div>
+<!-- end projectView -->
 
 
 <!-- QUICK ACTIONS -->
@@ -869,7 +944,7 @@ body.auth-pending .container {
 <div class="actions">
 
 
-    <a href="#" class="action">
+    <a href="residential.html#calc" class="action">
 
         <div class="action-icon">
             🧮
@@ -886,7 +961,7 @@ body.auth-pending .container {
     </a>
 
 
-    <a href="#" class="action">
+    <a href="#service" class="action">
 
         <div class="action-icon">
             🔧
@@ -898,6 +973,23 @@ body.auth-pending .container {
 
         <div class="action-text">
             Request maintenance or support
+        </div>
+
+    </a>
+
+
+    <a href="enquiry.html" class="action">
+
+        <div class="action-icon">
+            📝
+        </div>
+
+        <div class="action-title">
+            Get a New Quote
+        </div>
+
+        <div class="action-text">
+            Tell us about another requirement
         </div>
 
     </a>
@@ -923,30 +1015,44 @@ body.auth-pending .container {
 </div>
 
 
-<!-- SERVICE -->
+<!-- SERVICE REQUESTS -->
 
-<div class="box service-box">
+<div class="box" id="service" style="margin-top:25px">
 
-    <div>
+    <h2>Service Requests</h2>
+    <p class="box-subtitle">
+        Need cleaning, maintenance or help with your system? Tell us and we will call you.
+    </p>
 
-        <h2>
-            Need Help With Your Solar System?
-        </h2>
+    <form class="form" id="svcForm" novalidate>
+        <div class="form-row">
+            <div>
+                <label for="svcType">What do you need help with?</label>
+                <select id="svcType">
+                    <option value="maintenance">Cleaning or maintenance</option>
+                    <option value="fault">System not working properly</option>
+                    <option value="billing">Bill or documents</option>
+                    <option value="other">Something else</option>
+                </select>
+            </div>
+            <div>
+                <label for="svcTime">Best time to call</label>
+                <select id="svcTime">
+                    <option value="any">Any time</option>
+                    <option value="morning">Morning</option>
+                    <option value="afternoon">Afternoon</option>
+                    <option value="evening">Evening</option>
+                </select>
+            </div>
+        </div>
+        <label for="svcMsg">Describe the problem or request</label>
+        <textarea id="svcMsg" maxlength="1000" placeholder="For example: panels need cleaning, inverter showing a red light"></textarea>
+        <div class="form-msg" id="svcMsgOut" role="alert"></div>
+        <button type="submit" class="service-btn" id="svcBtn">Send Request</button>
+    </form>
 
-        <p class="box-subtitle">
-            Our team can help with installation,
-            maintenance and service requests.
-        </p>
-
-    </div>
-
-    <button
-    class="service-btn"
-    onclick="alert('Service request feature coming soon!')">
-
-        Request Service
-
-    </button>
+    <h3 class="subhead">My service requests</h3>
+    <div id="svcBody"><p class="empty">Loading...</p></div>
 
 </div>
 
@@ -997,8 +1103,177 @@ import {
 
 import {
     doc,
-    getDoc
+    getDoc,
+    collection,
+    query,
+    where,
+    getDocs,
+    addDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+
+
+const $ = (id) => document.getElementById(id);
+
+const SOLUTION = {
+    residential: "Residential Solar",
+    commercial: "Commercial Solar",
+    industrial: "Industrial Solar",
+    hybrid: "Hybrid and Battery Storage",
+    other: "Solar enquiry"
+};
+const ENQ_STATUS = {
+    new: "Received",
+    contacted: "We have contacted you",
+    proposal: "Proposal sent",
+    won: "Project started",
+    closed: "Closed"
+};
+const SVC_TYPE = {
+    maintenance: "Cleaning or maintenance",
+    fault: "System not working properly",
+    billing: "Bill or documents",
+    other: "Something else"
+};
+const SVC_STATUS = { new: "Received", progress: "In progress", done: "Completed" };
+const STAGES = [
+    ["enquiry", "Enquiry"],
+    ["survey", "Site survey"],
+    ["proposal", "Proposal"],
+    ["approval", "Approval"],
+    ["installation", "Installation"],
+    ["commissioning", "Commissioning"],
+    ["live", "System live"]
+];
+
+let currentUser = null;
+let profileName = "";
+let profileMobile = "";
+
+
+function el(tag, text, cls) {
+    const e = document.createElement(tag);
+    if (text) e.textContent = text;
+    if (cls) e.className = cls;
+    return e;
+}
+
+function fmtDate(ts) {
+    try {
+        if (ts && ts.toDate) {
+            return ts.toDate().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+        }
+    } catch (e) { /* ignore */ }
+    return "";
+}
+
+// Fetch this customer's own documents from a collection, newest first
+async function fetchMine(name, uid) {
+    const snap = await getDocs(query(collection(db, name), where("uid", "==", uid)));
+    const rows = [];
+    snap.forEach((d) => rows.push({ id: d.id, ...d.data() }));
+    rows.sort((a, b) => {
+        const am = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+        const bm = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+        return bm - am;
+    });
+    return rows;
+}
+
+function renderList(box, rows, labelFn, statusMap, emptyNode) {
+    box.textContent = "";
+    if (!rows.length) { box.appendChild(emptyNode); return; }
+    const ul = el("ul", "", "list");
+    rows.forEach((r) => {
+        const li = el("li");
+        const left = el("div");
+        left.appendChild(el("div", labelFn(r), "what"));
+        left.appendChild(el("div", fmtDate(r.createdAt), "when"));
+        li.appendChild(left);
+        li.appendChild(el("span", statusMap[r.status] || "Received", "tag"));
+        ul.appendChild(li);
+    });
+    box.appendChild(ul);
+}
+
+function enquiriesEmpty() {
+    const p = el("p", "You have not sent an enquiry yet. ", "empty");
+    const a = el("a", "Request a quote");
+    a.href = "enquiry.html";
+    p.appendChild(a);
+    return p;
+}
+
+async function loadEnquiries() {
+    try {
+        const rows = await fetchMine("enquiries", currentUser.uid);
+        renderList($("enquiriesBody"), rows, (r) => SOLUTION[r.solution] || "Solar enquiry", ENQ_STATUS, enquiriesEmpty());
+    } catch (err) {
+        console.error("Could not load enquiries:", err);
+        $("enquiriesBody").textContent = "";
+        $("enquiriesBody").appendChild(el("p", "We could not load your enquiries right now. Please try again later.", "empty"));
+    }
+}
+
+async function loadServices() {
+    try {
+        const rows = await fetchMine("serviceRequests", currentUser.uid);
+        renderList($("svcBody"), rows, (r) => SVC_TYPE[r.type] || "Service request", SVC_STATUS, el("p", "No service requests yet.", "empty"));
+    } catch (err) {
+        console.error("Could not load service requests:", err);
+        $("svcBody").textContent = "";
+        $("svcBody").appendChild(el("p", "We could not load your requests right now.", "empty"));
+    }
+}
+
+function showProject(p) {
+    $("projectBox").hidden = false;
+    $("projectView").hidden = false;
+
+    $("projectTitle").textContent = p.title || (SOLUTION[p.solution] || "My Project");
+    const bits = [];
+    if (p.solution && SOLUTION[p.solution]) bits.push(SOLUTION[p.solution]);
+    if (typeof p.sizeKw === "number") bits.push(p.sizeKw + " kW");
+    $("projectSub").textContent = bits.join(" | ") || "Your project with TrinityGreen Energy";
+
+    let idx = STAGES.findIndex((s) => s[0] === p.stage);
+    if (idx < 0) idx = 0;
+    const ol = $("stages");
+    ol.textContent = "";
+    STAGES.forEach((s, i) => {
+        const li = el("li", s[1]);
+        if (i < idx) li.className = "done";
+        if (i === idx) li.className = "current";
+        ol.appendChild(li);
+    });
+    $("projectNote").textContent = p.note || "";
+
+    if (typeof p.sizeKw === "number") {
+        $("cardSize").textContent = p.sizeKw + " kW";
+        $("infoSize").textContent = p.sizeKw + " kW";
+    }
+    $("welcomeText").textContent = "Here is how your project and your solar system are doing.";
+
+    // The chart was created while hidden, so let it re-measure
+    if (window.Chart && Chart.getChart) {
+        const c = Chart.getChart("generationChart");
+        if (c) c.resize();
+    }
+}
+
+async function loadProject() {
+    // ?preview=project shows a sample project so you can see the layout
+    if (new URLSearchParams(location.search).get("preview") === "project") {
+        showProject({ title: "Sample home solar project", solution: "residential", sizeKw: 5, stage: "installation", note: "Sample project for preview only." });
+        return;
+    }
+    try {
+        const rows = await fetchMine("projects", currentUser.uid);
+        if (rows.length) showProject(rows[0]);
+    } catch (err) {
+        console.error("Could not load project:", err);
+    }
+}
 
 
 /* USER LOGIN */
@@ -1010,6 +1285,8 @@ onAuthStateChanged(auth, async (user) => {
         window.location.replace("login.html");
         return;
     }
+
+    currentUser = user;
 
     // Sensible fallbacks if the profile document is missing or incomplete
     let name = user.displayName ||
@@ -1028,33 +1305,76 @@ onAuthStateChanged(auth, async (user) => {
         console.error("Could not load profile:", err);
     }
 
-    document.getElementById("name").textContent = name;
-    document.getElementById("customerName").textContent = name;
-    document.getElementById("mobile").textContent = mobile;
+    profileName = name;
+    profileMobile = mobile === "Not provided" ? "" : mobile;
+
+    $("name").textContent = name;
+    $("customerName").textContent = name;
+    $("mobile").textContent = mobile;
 
     // Signed in: reveal the dashboard
     document.body.classList.remove("auth-pending");
+
+    loadEnquiries();
+    loadServices();
+    loadProject();
+});
+
+
+/* SERVICE REQUEST FORM */
+
+$("svcForm").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const out = $("svcMsgOut");
+    out.className = "form-msg";
+    out.textContent = "";
+
+    if (!currentUser) return;
+
+    const message = $("svcMsg").value.trim();
+    if (message.length < 5) {
+        out.className = "form-msg bad";
+        out.textContent = "Please describe what you need (a few words is fine).";
+        return;
+    }
+
+    const btn = $("svcBtn");
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+
+    try {
+        await addDoc(collection(db, "serviceRequests"), {
+            uid: currentUser.uid,
+            name: profileName,
+            mobile: profileMobile,
+            type: $("svcType").value,
+            callTime: $("svcTime").value,
+            message: message,
+            status: "new",
+            createdAt: serverTimestamp()
+        });
+        $("svcMsg").value = "";
+        out.className = "form-msg ok";
+        out.textContent = "Thank you. We have received your request and will call you soon.";
+        loadServices();
+    } catch (err) {
+        console.error("Service request failed:", err);
+        out.className = "form-msg bad";
+        out.textContent = "Sorry, we could not send this. Please try again, or call us on 86079 71755.";
+    }
+
+    btn.disabled = false;
+    btn.textContent = "Send Request";
 });
 
 
 /* LOGOUT */
 
-document.getElementById(
-    "logoutBtn"
-).addEventListener(
-    "click",
-    () => {
-
-        signOut(auth)
-        .then(() => {
-
-            window.location.href =
-                "login.html";
-
-        });
-
-    }
-);
+$("logoutBtn").addEventListener("click", () => {
+    signOut(auth).then(() => {
+        window.location.href = "login.html";
+    });
+});
 
 
 </script>
