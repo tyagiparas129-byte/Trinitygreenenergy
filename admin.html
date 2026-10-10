@@ -82,6 +82,7 @@ body.pending .container { visibility: hidden; }
   <div class="tabs" role="tablist">
     <button type="button" class="tab" role="tab" data-tab="enq" aria-selected="true" id="tabEnq">Enquiries</button>
     <button type="button" class="tab" role="tab" data-tab="svc" aria-selected="false" id="tabSvc">Service requests</button>
+    <button type="button" class="tab" role="tab" data-tab="cust" aria-selected="false" id="tabCust">Customers</button>
     <button type="button" class="tab" role="tab" data-tab="proj" aria-selected="false" id="tabProj">Projects</button>
   </div>
 
@@ -103,6 +104,19 @@ body.pending .container { visibility: hidden; }
       <button type="button" class="btn light" id="svcReload">Refresh</button>
     </div>
     <div class="list" id="svcList"><p class="empty">Loading...</p></div>
+  </section>
+
+  <!-- CUSTOMERS -->
+  <section id="panel-cust" hidden>
+    <div id="custSearchView">
+      <div class="panel">
+        <h2>Find a customer</h2>
+        <input id="custSearch" type="search" placeholder="Type a name or mobile number" style="width:100%" autocomplete="off">
+        <p class="note" style="margin-top:8px">Includes people who sent an enquiry without making an account.</p>
+      </div>
+      <div class="list" id="custResults"></div>
+    </div>
+    <div id="custDetail" hidden></div>
   </section>
 
   <!-- PROJECTS -->
@@ -207,75 +221,75 @@ function statusControl(collName, row, statusPairs) {
 }
 
 /* ENQUIRIES */
+function enquiryCard(r) {
+    const c = el("div", "", "card");
+    const top = el("div", "", "card-top");
+    const who = el("div", "", "who");
+    who.textContent = r.name || "(no name)";
+    who.appendChild(document.createTextNode(" "));
+    who.appendChild(el("span", r.uid ? "Has account" : "Guest", r.uid ? "badge" : "badge guest"));
+    top.appendChild(who);
+    top.appendChild(el("div", fmt(r.createdAt), "when"));
+    c.appendChild(top);
+
+    const meta = el("div", "", "meta");
+    metaItem(meta, "Mobile", link(r.mobile || "-", "tel:+91" + (r.mobile || "")));
+    if (r.email) metaItem(meta, "Email", link(r.email, "mailto:" + r.email));
+    if (r.city) metaItem(meta, "City", r.city);
+    metaItem(meta, "Interested in", SOLUTION[r.solution] || r.solution || "-");
+    if (typeof r.monthlyBill === "number") metaItem(meta, "Monthly bill", "\u20B9" + r.monthlyBill.toLocaleString("en-IN"));
+    metaItem(meta, "Best time to call", CALLTIME[r.callTime] || "Any time");
+    c.appendChild(meta);
+    if (r.message) c.appendChild(el("div", r.message, "msg"));
+
+    const ctl = statusControl("enquiries", r, ENQ_STATUS);
+    if (r.uid && users[r.uid]) {
+        const b = el("button", "Create project", "btn light");
+        b.type = "button";
+        b.addEventListener("click", () => startProject(r));
+        ctl.appendChild(b);
+    }
+    c.appendChild(ctl);
+    return c;
+}
+
 function renderEnquiries() {
     const f = $("enqFilter").value;
     const list = $("enqList");
     list.textContent = "";
     const rows = enquiries.filter((r) => !f || (r.status || "new") === f);
     if (!rows.length) { list.appendChild(el("p", "Nothing here.", "empty")); return; }
-    rows.forEach((r) => {
-        const c = el("div", "", "card");
-        const top = el("div", "", "card-top");
-        const who = el("div", "", "who");
-        who.textContent = r.name || "(no name)";
-        who.appendChild(document.createTextNode(" "));
-        who.appendChild(el("span", r.uid ? "Has account" : "Guest", r.uid ? "badge" : "badge guest"));
-        top.appendChild(who);
-        top.appendChild(el("div", fmt(r.createdAt), "when"));
-        c.appendChild(top);
-
-        const meta = el("div", "", "meta");
-        metaItem(meta, "Mobile", link(r.mobile || "-", "tel:+91" + (r.mobile || "")));
-        if (r.email) metaItem(meta, "Email", link(r.email, "mailto:" + r.email));
-        if (r.city) metaItem(meta, "City", r.city);
-        metaItem(meta, "Interested in", SOLUTION[r.solution] || r.solution || "-");
-        if (typeof r.monthlyBill === "number") metaItem(meta, "Monthly bill", "₹" + r.monthlyBill.toLocaleString("en-IN"));
-        metaItem(meta, "Best time to call", CALLTIME[r.callTime] || "Any time");
-        c.appendChild(meta);
-        if (r.message) c.appendChild(el("div", r.message, "msg"));
-
-        const ctl = statusControl("enquiries", r, ENQ_STATUS);
-        if (r.uid && users[r.uid]) {
-            const b = el("button", "Create project", "btn light");
-            b.type = "button";
-            b.addEventListener("click", () => startProject(r));
-            ctl.appendChild(b);
-        }
-        c.appendChild(ctl);
-        list.appendChild(c);
-    });
+    rows.forEach((r) => list.appendChild(enquiryCard(r)));
 }
 
 /* SERVICE REQUESTS */
+function serviceCard(r) {
+    const c = el("div", "", "card");
+    const top = el("div", "", "card-top");
+    top.appendChild(el("div", r.name || (users[r.uid] && users[r.uid].name) || "(customer)", "who"));
+    top.appendChild(el("div", fmt(r.createdAt), "when"));
+    c.appendChild(top);
+    const meta = el("div", "", "meta");
+    if (r.mobile) metaItem(meta, "Mobile", link(r.mobile, "tel:+91" + r.mobile));
+    metaItem(meta, "Type", SVC_TYPE[r.type] || r.type || "-");
+    metaItem(meta, "Best time to call", CALLTIME[r.callTime] || "Any time");
+    c.appendChild(meta);
+    if (r.message) c.appendChild(el("div", r.message, "msg"));
+    c.appendChild(statusControl("serviceRequests", r, SVC_STATUS));
+    return c;
+}
+
 function renderServices() {
     const f = $("svcFilter").value;
     const list = $("svcList");
     list.textContent = "";
     const rows = services.filter((r) => !f || (r.status || "new") === f);
     if (!rows.length) { list.appendChild(el("p", "Nothing here.", "empty")); return; }
-    rows.forEach((r) => {
-        const c = el("div", "", "card");
-        const top = el("div", "", "card-top");
-        top.appendChild(el("div", r.name || (users[r.uid] && users[r.uid].name) || "(customer)", "who"));
-        top.appendChild(el("div", fmt(r.createdAt), "when"));
-        c.appendChild(top);
-        const meta = el("div", "", "meta");
-        if (r.mobile) metaItem(meta, "Mobile", link(r.mobile, "tel:+91" + r.mobile));
-        metaItem(meta, "Type", SVC_TYPE[r.type] || r.type || "-");
-        metaItem(meta, "Best time to call", CALLTIME[r.callTime] || "Any time");
-        c.appendChild(meta);
-        if (r.message) c.appendChild(el("div", r.message, "msg"));
-        c.appendChild(statusControl("serviceRequests", r, SVC_STATUS));
-        list.appendChild(c);
-    });
+    rows.forEach((r) => list.appendChild(serviceCard(r)));
 }
 
 /* PROJECTS */
-function renderProjects() {
-    const list = $("projList");
-    list.textContent = "";
-    if (!projects.length) { list.appendChild(el("p", "No projects yet.", "empty")); return; }
-    projects.forEach((p) => {
+function projectCard(p) {
         const c = el("div", "", "card");
         const top = el("div", "", "card-top");
         top.appendChild(el("div", (p.title || "Project") + " — " + (p.customerName || (users[p.uid] && users[p.uid].name) || "customer"), "who"));
@@ -313,8 +327,14 @@ function renderProjects() {
         });
         ctl.appendChild(save); ctl.appendChild(msg);
         c.appendChild(ctl);
-        list.appendChild(c);
-    });
+        return c;
+}
+
+function renderProjects() {
+    const list = $("projList");
+    list.textContent = "";
+    if (!projects.length) { list.appendChild(el("p", "No projects yet.", "empty")); return; }
+    projects.forEach((p) => list.appendChild(projectCard(p)));
 }
 
 function fillCustomerSelect() {
@@ -362,9 +382,134 @@ $("projForm").addEventListener("submit", async (ev) => {
     btn.disabled = false;
 });
 
+/* CUSTOMERS: search by name or mobile, then see everything about one person */
+function digits(s) { return String(s || "").replace(/\D/g, ""); }
+function last10(s) { const d = digits(s); return d.length > 10 ? d.slice(-10) : d; }
+
+function buildPeople() {
+    const people = [];
+    const seen = new Set();
+    Object.entries(users).forEach(([uid, u]) => {
+        people.push({ uid, name: u.name, mobile: u.mobile, email: u.email, address: u.address, createdAt: u.createdAt, hasAccount: true });
+        if (last10(u.mobile)) seen.add(last10(u.mobile));
+    });
+    // People who only sent an enquiry (no account)
+    enquiries.filter((e) => !e.uid).forEach((e) => {
+        const m = last10(e.mobile);
+        if (!m || seen.has(m)) return;
+        seen.add(m);
+        people.push({ uid: null, name: e.name, mobile: e.mobile, email: e.email || "", address: "", createdAt: e.createdAt, hasAccount: false });
+    });
+    people.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+    return people;
+}
+
+function renderCustomerResults() {
+    const q = $("custSearch").value.trim().toLowerCase();
+    const qd = digits(q);
+    const list = $("custResults");
+    list.textContent = "";
+    let people = buildPeople();
+    if (q) {
+        people = people.filter((p) =>
+            (p.name || "").toLowerCase().includes(q) ||
+            (p.email || "").toLowerCase().includes(q) ||
+            (qd.length >= 3 && digits(p.mobile).includes(qd))
+        );
+    }
+    if (!people.length) { list.appendChild(el("p", "No customer found.", "empty")); return; }
+    const shown = people.slice(0, 50);
+    shown.forEach((p) => {
+        const c = el("div", "", "card");
+        const top = el("div", "", "card-top");
+        const who = el("div", "", "who");
+        who.textContent = p.name || "(no name)";
+        who.appendChild(document.createTextNode(" "));
+        who.appendChild(el("span", p.hasAccount ? "Has account" : "Guest", p.hasAccount ? "badge" : "badge guest"));
+        top.appendChild(who);
+        const b = el("button", "View details", "btn"); b.type = "button";
+        b.addEventListener("click", () => showCustomer(p));
+        top.appendChild(b);
+        c.appendChild(top);
+        const meta = el("div", "", "meta");
+        if (p.mobile) metaItem(meta, "Mobile", p.mobile);
+        if (p.email) metaItem(meta, "Email", p.email);
+        c.appendChild(meta);
+        list.appendChild(c);
+    });
+    if (people.length > shown.length) list.appendChild(el("p", "Showing the first 50. Type more to narrow the search.", "note"));
+}
+
+function sectionTitle(text) { const h = el("h2", text); h.style.margin = "22px 0 10px"; h.style.fontSize = "18px"; return h; }
+
+function showCustomer(p) {
+    const m = last10(p.mobile);
+    const enq = enquiries.filter((e) => (p.uid && e.uid === p.uid) || (m && last10(e.mobile) === m));
+    const svc = services.filter((s) => (p.uid && s.uid === p.uid) || (m && last10(s.mobile) === m));
+    const prj = projects.filter((x) => p.uid && x.uid === p.uid);
+
+    const box = $("custDetail");
+    box.textContent = "";
+    const back = el("button", "\u2190 Back to search", "btn light"); back.type = "button";
+    back.addEventListener("click", () => { box.hidden = true; $("custSearchView").hidden = false; });
+    box.appendChild(back);
+
+    const head = el("div", "", "card");
+    head.style.marginTop = "14px";
+    const top = el("div", "", "card-top");
+    const who = el("div", "", "who");
+    who.textContent = p.name || "(no name)";
+    who.appendChild(document.createTextNode(" "));
+    who.appendChild(el("span", p.hasAccount ? "Has account" : "Guest (no account)", p.hasAccount ? "badge" : "badge guest"));
+    top.appendChild(who);
+    if (p.createdAt) top.appendChild(el("div", "Joined " + fmt(p.createdAt), "when"));
+    head.appendChild(top);
+    const meta = el("div", "", "meta");
+    if (p.mobile) metaItem(meta, "Mobile", link(p.mobile, "tel:+91" + last10(p.mobile)));
+    if (p.email) metaItem(meta, "Email", link(p.email, "mailto:" + p.email));
+    if (p.address) metaItem(meta, "Address", p.address);
+    head.appendChild(meta);
+    if (p.uid) {
+        const ctl = el("div", "", "controls");
+        const cp = el("button", "Create project for this customer", "btn"); cp.type = "button";
+        cp.addEventListener("click", () => {
+            showTab("proj");
+            $("pCustomer").value = p.uid;
+            $("projFormPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        ctl.appendChild(cp);
+        head.appendChild(ctl);
+    }
+    box.appendChild(head);
+
+    box.appendChild(sectionTitle("Projects (" + prj.length + ")"));
+    const pl = el("div", "", "list");
+    if (!prj.length) pl.appendChild(el("p", "No projects yet.", "empty"));
+    prj.forEach((x) => pl.appendChild(projectCard(x)));
+    box.appendChild(pl);
+
+    box.appendChild(sectionTitle("Enquiries (" + enq.length + ")"));
+    const el1 = el("div", "", "list");
+    if (!enq.length) el1.appendChild(el("p", "No enquiries.", "empty"));
+    enq.forEach((x) => el1.appendChild(enquiryCard(x)));
+    box.appendChild(el1);
+
+    box.appendChild(sectionTitle("Service requests (" + svc.length + ")"));
+    const sl = el("div", "", "list");
+    if (!svc.length) sl.appendChild(el("p", "No service requests.", "empty"));
+    svc.forEach((x) => sl.appendChild(serviceCard(x)));
+    box.appendChild(sl);
+
+    $("custSearchView").hidden = true;
+    box.hidden = false;
+    window.scrollTo({ top: 0 });
+}
+
+$("custSearch").addEventListener("input", renderCustomerResults);
+
 /* Tabs and counts */
 function showTab(name) {
-    ["enq", "svc", "proj"].forEach((t) => {
+    ["enq", "svc", "cust", "proj"].forEach((t) => {
         $("panel-" + t).hidden = t !== name;
     });
     document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === name ? "true" : "false"));
@@ -399,18 +544,20 @@ $("svcReload").addEventListener("click", refreshServices);
 async function start() {
     try {
         const us = await getDocs(collection(db, "users"));
-        us.forEach((d) => { const x = d.data(); users[d.id] = { name: x.name || "", mobile: x.mobile || "", email: x.email || "" }; });
+        us.forEach((d) => { const x = d.data(); users[d.id] = { name: x.name || "", mobile: x.mobile || "", email: x.email || "", address: x.address || "", createdAt: x.createdAt || null }; });
     } catch (e) { console.error("Could not load customers:", e); }
     fillCustomerSelect();
+    renderCustomerResults();
     await Promise.all([
         refreshEnquiries(),
         refreshServices(),
-        loadAll("projects").then((r) => { projects = r; renderProjects(); }).catch((e) => { console.error(e); $("projList").textContent = "Could not load projects."; })
+        loadAll("projects").then((r) => { projects = r; renderProjects(); renderCustomerResults(); }).catch((e) => { console.error(e); $("projList").textContent = "Could not load projects."; })
     ]);
+    renderCustomerResults();
 }
 
 onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.replace("login.html"); return; }
+    if (!user) { window.location.replace("login.html?as=admin"); return; }
     me = user;
     let isAdmin = false;
     try {
@@ -432,7 +579,7 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 $("logoutBtn").addEventListener("click", () => {
-    signOut(auth).then(() => { window.location.href = "login.html"; });
+    signOut(auth).then(() => { window.location.href = "login.html?as=admin"; });
 });
 </script>
 </body>
