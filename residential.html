@@ -116,7 +116,76 @@
   </div>
 </header>
 
-<section class="sp-section"><h2>System sizes we install</h2><p class="lead">Typical home rooftop systems come in these sizes. The right size depends on your roof area, shade and electricity use, so we confirm it at a site visit.</p><div class="sp-grid"><div class="sp-card"><h3>1 kW</h3><p>A small system for modest daytime use or limited roof space.</p></div><div class="sp-card"><h3>2 kW</h3><p>Suits many small homes with a few fans, lights, a fridge and TV.</p></div><div class="sp-card"><h3>3 kW</h3><p>A common size for family homes with more appliances or air conditioning.</p></div><div class="sp-card"><h3>5 kW and larger</h3><p>For bigger homes, heavier use, or when you want to add battery backup.</p></div></div></section><section class="sp-section alt"><h2>Check your roof</h2><p class="lead">A quick checklist before we visit. If you are not sure about any item, that is fine. We will assess it with you.</p><ul class="sp-list"><li>Shadow-free roof area for most of the day (no tall buildings, trees or water tanks over the panels)</li><li>Strong, sound roof surface that can carry panels (RCC or sheet)</li><li>Roughly 8 to 10 sq. metres of space for each 1 kW of panels</li><li>A valid electricity connection in your name or your family's</li><li>Access to the roof for installation and later cleaning</li></ul></section><section class="sp-section"><h2>Your monthly bill and savings</h2><p class="lead">Solar can reduce your electricity bill, but how much depends on your usage, your tariff, system size and sunlight. The best starting point is your latest electricity bill.</p><div class="sp-card" style="max-width:780px"><h3>Savings calculator</h3><p>Our online savings calculator is on its way. Until then, send or read out your last bill and we will give you an honest estimate for your home, with no obligation.</p></div></section><section class="sp-section" id="subsidy"><h2>Government subsidy</h2><p class="lead">The Government of India runs the PM Surya Ghar: Muft Bijli Yojana for residential rooftop solar. Support may be available for eligible households, but the amount and eligibility depend on the scheme rules at the time, your state and your electricity company (DISCOM).</p><ul class="sp-list"><li>Eligibility has included owning a house with a suitable roof, a valid electricity connection and no earlier solar subsidy</li><li>The scheme is planned to run until FY 2026-27, and applications go through the national portal</li><li>We can guide you through the process, but we cannot guarantee that you will qualify or the amount you will receive</li></ul><div class="sp-note">Always confirm the latest rules on the official scheme page: <a href="https://www.india.gov.in/spotlight/pm-surya-ghar-muft-bijli-yojana" target="_blank" rel="noopener">PM Surya Ghar on india.gov.in</a>.</div></section><section class="sp-section alt"><h2>What happens next</h2><p class="lead">Three simple steps, and you decide at every stage.</p><ul class="sp-list"><li>Create a free account and tell us about your home</li><li>We call you to talk about your needs, your bill and the next steps, including costs and payment options</li><li>We visit, check your roof and give you a written proposal</li></ul></section>
+<section class="sp-section"><h2>System sizes we install</h2><p class="lead">Typical home rooftop systems come in these sizes. The right size depends on your roof area, shade and electricity use, so we confirm it at a site visit.</p><div class="sp-grid"><div class="sp-card"><h3>1 kW</h3><p>A small system for modest daytime use or limited roof space.</p></div><div class="sp-card"><h3>2 kW</h3><p>Suits many small homes with a few fans, lights, a fridge and TV.</p></div><div class="sp-card"><h3>3 kW</h3><p>A common size for family homes with more appliances or air conditioning.</p></div><div class="sp-card"><h3>5 kW and larger</h3><p>For bigger homes, heavier use, or when you want to add battery backup.</p></div></div></section><section class="sp-section alt"><h2>Check your roof</h2><p class="lead">A quick checklist before we visit. If you are not sure about any item, that is fine. We will assess it with you.</p><ul class="sp-list"><li>Shadow-free roof area for most of the day (no tall buildings, trees or water tanks over the panels)</li><li>Strong, sound roof surface that can carry panels (RCC or sheet)</li><li>Roughly 8 to 10 sq. metres of space for each 1 kW of panels</li><li>A valid electricity connection in your name or your family's</li><li>Access to the roof for installation and later cleaning</li></ul></section><section class="sp-section"><h2>Your monthly bill and savings</h2><p class="lead">Solar can reduce your electricity bill, but how much depends on your usage, your tariff, system size and sunlight. The best starting point is your latest electricity bill.</p><div class="calc" id="calc">
+  <form id="calcForm" novalidate>
+    <h3>Savings calculator</h3>
+    <label for="cBill">Your average monthly electricity bill (&#8377;)</label>
+    <input id="cBill" type="number" inputmode="decimal" min="0" placeholder="e.g. 3500">
+    <label for="cRate">Price per unit on your bill (&#8377; per kWh)</label>
+    <input id="cRate" type="number" inputmode="decimal" min="0" step="0.1" value="7">
+    <div class="hint">We assumed 7. Check your bill and change it if different.</div>
+    <label for="cRoof">Shadow-free roof area (sq. metres, optional)</label>
+    <input id="cRoof" type="number" inputmode="decimal" min="0" placeholder="e.g. 30">
+    <div class="err" id="cErr" role="alert"></div>
+    <button class="btn btn-primary" type="submit">Show my estimate</button>
+  </form>
+  <div class="calc-out" id="cOut" aria-live="polite">
+    <p class="calc-empty">Enter your monthly bill and press <strong>Show my estimate</strong>. You will see a rough idea of the system size and the part of your bill solar could offset.</p>
+  </div>
+</div>
+<script>
+(function () {
+  var form = document.getElementById("calcForm");
+  var out = document.getElementById("cOut");
+  var err = document.getElementById("cErr");
+  var SUN = 4;          // assumed average kWh per kW per day (conservative)
+  var DAYS = 30;
+  var M2_PER_KW = 9;    // assumed roof area needed per kW
+  function el(tag, text, cls) { var e = document.createElement(tag); if (text) e.textContent = text; if (cls) e.className = cls; return e; }
+  function inr(n) { return "\u20B9" + Math.round(n).toLocaleString("en-IN"); }
+  function row(dl, label, value) { dl.appendChild(el("dt", label)); dl.appendChild(el("dd", value)); }
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    err.textContent = "";
+    var bill = parseFloat(document.getElementById("cBill").value);
+    var rate = parseFloat(document.getElementById("cRate").value);
+    var roof = parseFloat(document.getElementById("cRoof").value);
+    if (!(bill > 0)) { err.textContent = "Please enter your monthly bill."; return; }
+    if (!(rate > 0)) { err.textContent = "Please enter the price per unit (check your bill)."; return; }
+    var units = bill / rate;                       // kWh used per month
+    var perKw = SUN * DAYS;                        // kWh per kW per month
+    var wantKw = units / perKw;                    // size to cover usage
+    var kw = Math.max(1, Math.round(wantKw * 2) / 2);
+    var limited = false;
+    if (roof > 0) {
+      var maxKw = Math.floor((roof / M2_PER_KW) * 2) / 2;
+      if (maxKw < kw) { kw = Math.max(maxKw, 0); limited = true; }
+    }
+    out.textContent = "";
+    if (kw <= 0) {
+      out.appendChild(el("p", "That roof area looks small for a standard system. Call us and we can look at other options.", "calc-empty"));
+      return;
+    }
+    var gen = kw * perKw;                          // kWh per month
+    var covered = Math.min(gen, units);
+    var high = covered * rate;
+    var low = high * 0.7;
+    out.appendChild(el("p", "Rough starting point for your home"));
+    out.appendChild(el("div", "About " + kw + " kW", "big"));
+    var dl = el("dl");
+    row(dl, "Your estimated monthly use", Math.round(units) + " units (kWh)");
+    row(dl, "Estimated solar output per month", "about " + Math.round(gen) + " units");
+    row(dl, "Part of your bill solar might offset", inr(low) + " to " + inr(high) + " per month");
+    out.appendChild(dl);
+    if (limited) out.appendChild(el("p", "Your roof area limits the size, so this may cover less of your bill.", "small"));
+    out.appendChild(el("p", "This is an estimate only, not a quote or a promise. It assumes about " + SUN + " units per kW per day, no shade, and the price per unit you entered. Real results depend on your roof, shade, tariff, usage and the system installed. We confirm everything after a site visit.", "small"));
+    var call = el("a", "Talk to us about this estimate", "btn btn-primary");
+    call.href = "tel:+918607971755";
+    call.style.marginTop = "14px";
+    out.appendChild(call);
+  });
+})();
+</script></section><section class="sp-section" id="subsidy"><h2>Government subsidy</h2><p class="lead">The Government of India runs the PM Surya Ghar: Muft Bijli Yojana for residential rooftop solar. Support may be available for eligible households, but the amount and eligibility depend on the scheme rules at the time, your state and your electricity company (DISCOM).</p><ul class="sp-list"><li>Eligibility has included owning a house with a suitable roof, a valid electricity connection and no earlier solar subsidy</li><li>The scheme is planned to run until FY 2026-27, and applications go through the national portal</li><li>We can guide you through the process, but we cannot guarantee that you will qualify or the amount you will receive</li></ul><div class="sp-note">Always confirm the latest rules on the official scheme page: <a href="https://www.india.gov.in/spotlight/pm-surya-ghar-muft-bijli-yojana" target="_blank" rel="noopener">PM Surya Ghar on india.gov.in</a>.</div></section><section class="sp-section alt"><h2>What happens next</h2><p class="lead">Three simple steps, and you decide at every stage.</p><ul class="sp-list"><li>Create a free account and tell us about your home</li><li>We call you to talk about your needs, your bill and the next steps, including costs and payment options</li><li>We visit, check your roof and give you a written proposal</li></ul></section>
 
 <section class="sp-section">
   <h2>Explore other solutions</h2>
