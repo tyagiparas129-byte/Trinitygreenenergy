@@ -679,6 +679,29 @@
             overflow-wrap: anywhere;
         }
 
+
+        /* Clickable service cards: no link underline or blue */
+
+        a.service-card,
+        a.service-card:hover,
+        a.service-card:visited {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        a.service-card .more {
+            display: inline-block;
+            margin-top: 12px;
+            color: #08733e;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        a.service-card:hover .more {
+            text-decoration: underline;
+        }
+
 </style>
 
 </head>
