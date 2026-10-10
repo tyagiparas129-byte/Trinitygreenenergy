@@ -327,6 +327,93 @@ body.auth-pending .container {
     overflow-wrap: anywhere;
 }
 
+
+/* EDIT DETAILS */
+
+[hidden] { display: none !important; }
+
+.btn-outline {
+    background: white;
+    color: #08733e;
+    border: 1px solid #08733e;
+}
+
+.btn-outline:hover {
+    background: #eaf6ee;
+}
+
+.edit-row {
+    margin-top: 16px;
+}
+
+.edit-form label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 14px 0 5px;
+}
+
+.edit-form input,
+.edit-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #c9d8cf;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+
+.edit-form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.edit-form input:focus,
+.edit-form textarea:focus {
+    outline: 3px solid #9bd8b4;
+    border-color: #08733e;
+}
+
+.edit-form input[readonly] {
+    background: #f1f5f2;
+    color: #666;
+}
+
+.edit-hint {
+    font-size: 13px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.edit-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.edit-msg {
+    min-height: 22px;
+    margin-top: 12px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.edit-msg.ok { color: #08733e; }
+.edit-msg.bad { color: #c62828; }
+
+.privacy-line {
+    text-align: center;
+    color: #888;
+    font-size: 13px;
+    margin-top: 18px;
+}
+
+.privacy-line a {
+    color: #08733e;
+    font-weight: bold;
+}
+
 </style>
 
 </head>
@@ -420,6 +507,34 @@ body.auth-pending .container {
             <span class="info-value" id="pSince">Loading...</span>
         </div>
 
+        <div class="edit-row" id="editRow">
+            <button type="button" class="btn btn-outline" id="editBtn">Edit my details</button>
+        </div>
+
+        <form class="edit-form" id="editForm" hidden novalidate>
+
+            <label for="eName">Full name</label>
+            <input id="eName" type="text" autocomplete="name" maxlength="100">
+
+            <label for="eEmail">Email</label>
+            <input id="eEmail" type="email" readonly>
+            <div class="edit-hint">Your email is your login, so it cannot be changed here. Contact us if you need to change it.</div>
+
+            <label for="eMobile">Mobile number</label>
+            <input id="eMobile" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="10-digit mobile number">
+
+            <label for="eAddress">Address</label>
+            <textarea id="eAddress" autocomplete="street-address" maxlength="300"></textarea>
+
+            <div class="edit-msg" id="editMsg" role="alert"></div>
+
+            <div class="edit-buttons">
+                <button type="submit" class="btn btn-primary" id="saveBtn">Save changes</button>
+                <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
+            </div>
+
+        </form>
+
     </div>
 
 
@@ -437,6 +552,11 @@ body.auth-pending .container {
 
     </div>
 
+
+    <p class="privacy-line">
+        How we use your details: <a href="privacy.html">Privacy Policy</a>.
+        To delete your account or data, email us.
+    </p>
 
     <p class="help-line">
         Need help? Call
@@ -461,12 +581,39 @@ body.auth-pending .container {
 
     import {
         doc,
-        getDoc
+        getDoc,
+        setDoc
     } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
 
     function setText(id, text) {
         document.getElementById(id).textContent = text;
+    }
+
+    const $ = (id) => document.getElementById(id);
+
+    let currentUser = null;
+    let currentData = {};
+
+    function cleanMobile(raw) {
+        let d = String(raw).replace(/[\s\-()]/g, "");
+        if (d.startsWith("+91")) d = d.slice(3);
+        else if (d.startsWith("91") && d.length === 12) d = d.slice(2);
+        else if (d.startsWith("0") && d.length === 11) d = d.slice(1);
+        return /^[6-9]\d{9}$/.test(d) ? d : null;
+    }
+
+    function showDetails(user, data) {
+        const email = user.email || data.email || "Not provided";
+        const name = data.name ||
+            (user.email ? user.email.split("@")[0] : "Customer");
+        setText("avatar", (name.trim()[0] || "U").toUpperCase());
+        setText("headerName", name);
+        setText("headerEmail", email);
+        setText("pName", name);
+        setText("pEmail", email);
+        setText("pMobile", data.mobile || "Not provided");
+        setText("pAddress", data.address || "Not provided");
     }
 
 
@@ -478,6 +625,7 @@ body.auth-pending .container {
             return;
         }
 
+        currentUser = user;
         let data = {};
 
         try {
@@ -523,8 +671,84 @@ body.auth-pending .container {
         setText("pAddress", data.address || "Not provided");
         setText("pSince", since);
 
+        currentData = data;
+
         // Logged in: show the page
         document.body.classList.remove("auth-pending");
+    });
+
+
+    /* EDIT MY DETAILS */
+
+    $("editBtn").addEventListener("click", () => {
+        const name = currentData.name ||
+            (currentUser && currentUser.email ? currentUser.email.split("@")[0] : "");
+        $("eName").value = name;
+        $("eEmail").value = (currentUser && currentUser.email) || currentData.email || "";
+        $("eMobile").value = currentData.mobile || "";
+        $("eAddress").value = currentData.address || "";
+        $("editMsg").textContent = "";
+        $("editMsg").className = "edit-msg";
+        $("editForm").hidden = false;
+        $("editRow").hidden = true;
+        $("eName").focus();
+    });
+
+    $("cancelBtn").addEventListener("click", () => {
+        $("editForm").hidden = true;
+        $("editRow").hidden = false;
+    });
+
+    $("editForm").addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        const msg = $("editMsg");
+        msg.className = "edit-msg";
+        msg.textContent = "";
+
+        if (!currentUser) return;
+
+        const name = $("eName").value.trim();
+        const mobile = cleanMobile($("eMobile").value);
+        const address = $("eAddress").value.trim();
+
+        if (name.length < 2) {
+            msg.className = "edit-msg bad";
+            msg.textContent = "Please enter your full name.";
+            return;
+        }
+        if (!mobile) {
+            msg.className = "edit-msg bad";
+            msg.textContent = "Please enter a valid 10-digit mobile number.";
+            return;
+        }
+
+        const btn = $("saveBtn");
+        btn.disabled = true;
+        btn.textContent = "Saving...";
+
+        try {
+            await setDoc(doc(db, "users", currentUser.uid), {
+                name: name,
+                mobile: mobile,
+                address: address,
+                email: currentUser.email || currentData.email || ""
+            }, { merge: true });
+
+            currentData = Object.assign({}, currentData, { name: name, mobile: mobile, address: address });
+            showDetails(currentUser, currentData);
+
+            $("editForm").hidden = true;
+            $("editRow").hidden = false;
+        } catch (err) {
+            console.error("Could not save details:", err);
+            msg.className = "edit-msg bad";
+            msg.textContent = "Sorry, we could not save your changes. Please try again.";
+        }
+
+        btn.disabled = false;
+        btn.textContent = "Save changes";
     });
 
 
