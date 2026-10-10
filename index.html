@@ -502,6 +502,10 @@
             z-index: 1100;
         }
 
+        .profile-dropdown a[hidden] {
+            display: none;
+        }
+
         .profile-dropdown.open {
             display: block;
         }
@@ -786,6 +790,10 @@
 
                     <a href="profile.html">
                         My Profile
+                    </a>
+
+                    <a href="admin.html" id="adminLink" hidden>
+                        Admin Panel
                     </a>
 
                     <button type="button"
@@ -1460,6 +1468,7 @@
         guestLinks.hidden = false;
         navDashboard.hidden = true;
         userMenu.hidden = true;
+        document.getElementById("adminLink").hidden = true;
         closeMenu();
 
         heroCta.textContent = "Get Started";
@@ -1531,6 +1540,14 @@
         }
 
         showUser(name, user.email || "");
+
+        // Staff only: show the Admin Panel link
+        try {
+            const adminSnap = await getDoc(doc(db, "admins", user.uid));
+            document.getElementById("adminLink").hidden = !adminSnap.exists();
+        } catch (err) {
+            document.getElementById("adminLink").hidden = true;
+        }
     });
 
     // Safety net: if Firebase is slow, show the normal Login buttons
