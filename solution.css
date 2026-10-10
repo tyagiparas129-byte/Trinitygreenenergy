@@ -700,3 +700,20 @@
 .service-card .more{display:inline-block;margin-top:12px;color:#08733e;font-weight:bold;font-size:15px}
 @media(max-width:750px){.sp-hero h1{font-size:32px}.sp-hero{padding:50px 6% 45px}}
 [hidden]{display:none !important}
+
+/* CALCULATOR */
+.calc{background:#fff;border-radius:16px;padding:26px;box-shadow:0 4px 18px rgba(0,0,0,.08);max-width:900px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px}
+.calc h3{color:#123d2a;margin-bottom:12px}
+.calc label{display:block;font-weight:700;font-size:14px;color:#123d2a;margin:14px 0 5px}
+.calc input{width:100%;padding:12px 14px;border:1px solid #c9d8cf;border-radius:8px;font-size:16px;font-family:Arial,sans-serif}
+.calc input:focus{outline:3px solid #9bd8b4;border-color:#08733e}
+.calc .hint{font-size:13px;color:#777;margin-top:4px}
+.calc .err{color:#c62828;font-size:14px;margin-top:10px;min-height:20px}
+.calc .btn{margin-top:14px}
+.calc-out{background:#eaf6ee;border-radius:12px;padding:20px}
+.calc-out .big{font-size:30px;font-weight:bold;color:#08733e;margin:4px 0}
+.calc-out dl{margin-top:12px;display:grid;gap:10px}
+.calc-out dt{font-size:13px;color:#555}
+.calc-out dd{font-weight:bold;color:#123d2a;font-size:18px}
+.calc-out .small{font-size:13px;color:#555;margin-top:14px}
+.calc-empty{color:#555}
