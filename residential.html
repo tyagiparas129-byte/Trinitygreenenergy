@@ -111,7 +111,7 @@
   <div class="sp-btns">
     <a class="btn btn-light" data-guest href="signup.html">Create Account</a>
         <a class="btn btn-light" data-user hidden href="dashboard.html">Go to My Dashboard</a>
-        <a class="btn hero-outline" href="mailto:trinitygreenenergy3@gmail.com?subject=Home%20solar%20quote%20request">Get a Home Solar Quote</a>
+        <a class="btn hero-outline" href="enquiry.html?type=residential">Get a Home Solar Quote</a>
         <a class="btn hero-outline" href="tel:+918607971755">Call Us: 86079 71755</a>
   </div>
 </header>
@@ -182,7 +182,12 @@
     var call = el("a", "Talk to us about this estimate", "btn btn-primary");
     call.href = "tel:+918607971755";
     call.style.marginTop = "14px";
+    var send = el("a", "Send my details to TrinityGreen", "btn btn-outline");
+    send.href = "enquiry.html?type=residential&bill=" + encodeURIComponent(Math.round(bill));
+    send.style.marginTop = "14px";
+    send.style.marginLeft = "10px";
     out.appendChild(call);
+    out.appendChild(send);
   });
 })();
 </script></section><section class="sp-section" id="subsidy"><h2>Government subsidy</h2><p class="lead">The Government of India runs the PM Surya Ghar: Muft Bijli Yojana for residential rooftop solar. Support may be available for eligible households, but the amount and eligibility depend on the scheme rules at the time, your state and your electricity company (DISCOM).</p><ul class="sp-list"><li>Eligibility has included owning a house with a suitable roof, a valid electricity connection and no earlier solar subsidy</li><li>The scheme is planned to run until FY 2026-27, and applications go through the national portal</li><li>We can guide you through the process, but we cannot guarantee that you will qualify or the amount you will receive</li></ul><div class="sp-note">Always confirm the latest rules on the official scheme page: <a href="https://www.india.gov.in/spotlight/pm-surya-ghar-muft-bijli-yojana" target="_blank" rel="noopener">PM Surya Ghar on india.gov.in</a>.</div></section><section class="sp-section alt"><h2>What happens next</h2><p class="lead">Three simple steps, and you decide at every stage.</p><ul class="sp-list"><li>Create a free account and tell us about your home</li><li>We call you to talk about your needs, your bill and the next steps, including costs and payment options</li><li>We visit, check your roof and give you a written proposal</li></ul></section>
@@ -198,7 +203,7 @@
   <div class="sp-btns">
     <a class="btn btn-light" data-guest href="signup.html">Create Account</a>
         <a class="btn btn-light" data-user hidden href="dashboard.html">Go to My Dashboard</a>
-        <a class="btn hero-outline" href="mailto:trinitygreenenergy3@gmail.com?subject=Home%20solar%20quote%20request">Get a Home Solar Quote</a>
+        <a class="btn hero-outline" href="enquiry.html?type=residential">Get a Home Solar Quote</a>
         <a class="btn hero-outline" href="tel:+918607971755">Call Us: 86079 71755</a>
   </div>
 </section>
