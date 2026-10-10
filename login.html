@@ -347,6 +347,37 @@
 
         }
 
+
+        /* Customer / Admin switch */
+        .mode-switch {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 22px;
+            background: #eef3f0;
+            padding: 5px;
+            border-radius: 12px;
+        }
+        .mode-switch button {
+            flex: 1;
+            padding: 11px 8px;
+            border: none;
+            border-radius: 9px;
+            background: transparent;
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            color: #4a5f54;
+            cursor: pointer;
+        }
+        .mode-switch button.on {
+            background: #08733e;
+            color: #fff;
+        }
+        .mode-switch button:focus-visible {
+            outline: 3px solid #9bd8b4;
+            outline-offset: 2px;
+        }
+        [hidden] { display: none !important; }
 </style>
 
 </head>
@@ -405,9 +436,14 @@
 
     <div class="login-section">
 
-        <h2>Welcome Back 👋</h2>
+        <div class="mode-switch" role="tablist" aria-label="Login type">
+            <button type="button" id="modeCustomer" class="on" role="tab" aria-selected="true">Customer Login</button>
+            <button type="button" id="modeAdmin" role="tab" aria-selected="false">Admin Login</button>
+        </div>
 
-        <p class="subtitle">
+        <h2 id="loginTitle">Welcome Back 👋</h2>
+
+        <p class="subtitle" id="loginSub">
             Login to your TrinityGreen Energy account
         </p>
 
@@ -470,7 +506,7 @@
         </form>
 
 
-        <div class="signup-text">
+        <div class="signup-text" id="signupText">
 
             Don't have an account?
 
@@ -496,13 +532,18 @@
 <script type="module">
 
     // Firebase setup now comes from the shared file
-    import { auth } from "./firebase-config.js";
+    import { auth, db } from "./firebase-config.js";
 
     import {
         signInWithEmailAndPassword,
         sendPasswordResetEmail,
         onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+
+    import {
+        doc,
+        getDoc
+    } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
 
     const loginForm     = document.getElementById("loginForm");
@@ -545,8 +586,63 @@
 
     /* If the person is already logged in, send them to the home page */
 
+    /* Customer login or Admin login (the link login.html?as=admin opens Admin) */
+
+    let adminMode = new URLSearchParams(window.location.search).get("as") === "admin";
+    let routing = false;
+
+    const modeCustomer = document.getElementById("modeCustomer");
+    const modeAdmin    = document.getElementById("modeAdmin");
+
+    function applyMode() {
+        modeCustomer.classList.toggle("on", !adminMode);
+        modeAdmin.classList.toggle("on", adminMode);
+        modeCustomer.setAttribute("aria-selected", String(!adminMode));
+        modeAdmin.setAttribute("aria-selected", String(adminMode));
+        document.getElementById("loginTitle").textContent =
+            adminMode ? "Staff Login" : "Welcome Back \uD83D\uDC4B";
+        document.getElementById("loginSub").textContent =
+            adminMode ? "For TrinityGreen Energy staff only"
+                      : "Login to your TrinityGreen Energy account";
+        document.getElementById("signupText").hidden = adminMode;
+        loginBtn.textContent = adminMode ? "Login as Staff" : "Login";
+        showMessage("", false);
+    }
+
+    modeCustomer.addEventListener("click", () => { adminMode = false; applyMode(); });
+    modeAdmin.addEventListener("click", () => { adminMode = true; applyMode(); });
+
+
+    /* Staff only: open the admin page if this login is on the admin list */
+
+    async function routeAdmin(user) {
+        if (routing) return;
+        routing = true;
+        let isAdmin = false;
+        try {
+            const snap = await getDoc(doc(db, "admins", user.uid));
+            isAdmin = snap.exists();
+        } catch (err) {
+            console.error(err);
+        }
+        if (isAdmin) {
+            window.location.replace("admin.html");
+            return;
+        }
+        routing = false;
+        loginBtn.disabled = false;
+        applyMode();
+        showMessage("This login is not a staff account. Use Customer Login, or log in with a staff email.", true);
+    }
+
+
+    /* If the person is already logged in, send them on */
+
     onAuthStateChanged(auth, (user) => {
-        if (user) {
+        if (!user) return;
+        if (adminMode) {
+            routeAdmin(user);
+        } else {
             window.location.replace("index.html");
         }
     });
@@ -570,16 +666,23 @@
             await signInWithEmailAndPassword(auth, email, password);
 
             showMessage("Login successful!", false);
-            window.location.replace("index.html");
+            if (adminMode) {
+                routeAdmin(auth.currentUser);
+            } else {
+                window.location.replace("index.html");
+            }
 
         } catch (error) {
 
             showMessage(friendlyError(error.code), true);
 
             loginBtn.disabled = false;
-            loginBtn.textContent = "Login";
+            loginBtn.textContent = adminMode ? "Login as Staff" : "Login";
         }
     });
+
+
+    applyMode();
 
 
     /* FORGOT PASSWORD */
