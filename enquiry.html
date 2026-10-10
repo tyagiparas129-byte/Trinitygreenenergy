@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request a Quote | TrinityGreen Energy</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<meta name="description" content="Tell TrinityGreen Energy about your solar requirement and we will call you to discuss the next steps.">
+<link rel="stylesheet" href="solution.css">
+</head>
+<body style="background:#f7faf8">
+<nav class="navbar">
+
+    <a href="index.html" class="logo">
+        <img src="logo-icon.png" alt="TrinityGreen Energy logo" class="logo-img">
+        <span>TrinityGreen Energy</span>
+    </a>
+
+    <div class="nav-links">
+
+        <a href="index.html">Home</a>
+
+        <a href="index.html#services">
+            Services
+        </a>
+
+        <a href="index.html#why-us">
+            Why Us
+        </a>
+
+        <a href="index.html#process">
+            Process
+        </a>
+
+        <a href="index.html#contact">
+            Contact
+        </a>
+
+        <div class="auth-area auth-pending" id="authArea">
+
+            <!-- Shown when logged out -->
+
+            <div class="guest-links" id="guestLinks">
+
+                <a href="login.html"
+                   class="nav-login">
+                    Login
+                </a>
+
+                <a href="signup.html"
+                   class="nav-signup">
+                    Create Account
+                </a>
+
+            </div>
+
+
+            <!-- Dashboard link (logged in only) -->
+
+            <a href="dashboard.html" id="navDashboard" hidden>
+                Dashboard
+            </a>
+
+
+            <!-- Shown when logged in -->
+
+            <div class="profile-menu" id="userMenu" hidden>
+
+                <button type="button"
+                        class="avatar-btn"
+                        id="avatarBtn"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        aria-label="Open profile menu">
+                    <span id="avatarInitial">U</span>
+                </button>
+
+                <div class="profile-dropdown"
+                     id="profileDropdown">
+
+                    <div class="pd-head">
+                        <div class="pd-name" id="pdName">Customer</div>
+                        <div class="pd-email" id="pdEmail"></div>
+                    </div>
+
+                    <a href="profile.html">
+                        My Profile
+                    </a>
+
+                    <button type="button"
+                            class="pd-item pd-logout"
+                            id="logoutBtn">
+                        Logout
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<main class="enq-wrap">
+  <div class="enq-card" id="enqCard">
+    <div id="enqFormBox">
+      <h1>Tell us what you need</h1>
+      <p class="sub">Share a few details and we will call you to talk about your requirement, the next steps, and costs and payment options. There is no obligation.</p>
+
+      <form id="enqForm" novalidate>
+        <div class="enq-grid">
+          <div>
+            <label for="fName">Full name</label>
+            <input id="fName" type="text" autocomplete="name" maxlength="100">
+          </div>
+          <div>
+            <label for="fMobile">Mobile number</label>
+            <input id="fMobile" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="10-digit number">
+          </div>
+          <div>
+            <label for="fEmail">Email <span class="opt">(optional)</span></label>
+            <input id="fEmail" type="email" autocomplete="email" maxlength="120">
+          </div>
+          <div>
+            <label for="fCity">City or town</label>
+            <input id="fCity" type="text" autocomplete="address-level2" maxlength="100" placeholder="e.g. Panipat">
+          </div>
+          <div>
+            <label for="fSolution">What are you interested in?</label>
+            <select id="fSolution">
+              <option value="residential">Residential Solar (home)</option>
+              <option value="commercial">Commercial Solar (business)</option>
+              <option value="industrial">Industrial Solar</option>
+              <option value="hybrid">Hybrid and Battery Storage</option>
+              <option value="other">Not sure yet</option>
+            </select>
+          </div>
+          <div>
+            <label for="fBill">Monthly electricity bill (&#8377;) <span class="opt">(optional)</span></label>
+            <input id="fBill" type="number" inputmode="decimal" min="0" max="100000000" placeholder="e.g. 3500">
+          </div>
+          <div>
+            <label for="fTime">Best time to call</label>
+            <select id="fTime">
+              <option value="any">Any time</option>
+              <option value="morning">Morning</option>
+              <option value="afternoon">Afternoon</option>
+              <option value="evening">Evening</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="fMsg">Anything else we should know? <span class="opt">(optional)</span></label>
+        <textarea id="fMsg" maxlength="1000" placeholder="For example: roof type, power-cut problems, questions about cost or subsidy"></textarea>
+
+        <div class="hp" aria-hidden="true"><label for="fWeb">Leave this empty</label><input id="fWeb" type="text" tabindex="-1" autocomplete="off"></div>
+
+        <label class="enq-consent">
+          <input id="fConsent" type="checkbox">
+          <span>I agree that TrinityGreen Energy may contact me about this enquiry by phone, WhatsApp or email.</span>
+        </label>
+
+        <div class="enq-err" id="enqErr" role="alert"></div>
+        <button class="btn btn-primary" type="submit" id="enqBtn">Send Enquiry</button>
+        <p class="enq-note">Prefer to talk now? Call <a href="tel:+918607971755">86079 71755</a>.</p>
+      </form>
+    </div>
+
+    <div class="enq-done" id="enqDone" hidden>
+      <h2>Thank you. We have your enquiry.</h2>
+      <p id="enqDoneText">One of our team will call you soon to discuss your requirement and the next steps.</p>
+      <div class="sp-btns" style="justify-content:center">
+        <a class="btn btn-primary" id="doneBtn1" href="index.html">Back to Home</a>
+        <a class="btn btn-outline" id="doneBtn2" href="tel:+918607971755">Call Us Now</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+
+    <div class="footer-grid">
+
+
+        <div>
+
+            <div class="footer-logo">
+                <img src="logo-icon.png" alt="TrinityGreen Energy logo">
+                <h3>TrinityGreen Energy</h3>
+            </div>
+
+            <p>
+                Smart and sustainable solar energy
+                solutions for a greener future.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="index.html#services">
+                Services
+            </a>
+
+            <a href="index.html#why-us">
+                Why Us
+            </a>
+
+            <a href="index.html#process">
+                How It Works
+            </a>
+
+            <a href="index.html#contact">
+                Contact
+            </a>
+
+        </div>
+
+
+        <div>
+
+            <h3>
+                Customer
+            </h3>
+
+            <a href="login.html" >
+                Customer Login
+            </a>
+
+            <a href="signup.html" >
+                Create Account
+            </a>
+
+        </div>
+
+
+        <div>
+
+            <h3>
+                Contact
+            </h3>
+
+            <a href="tel:+918607971755">
+                📞 Paras Tyagi: 86079 71755
+            </a>
+
+            <a href="tel:+919996777221">
+                📞 Munish Kumar: 99967 77221
+            </a>
+
+            <a href="tel:+918930478761">
+                📞 Arnav Garg: 89304 78761
+            </a>
+
+            <a href="mailto:trinitygreenenergy3@gmail.com">
+                ✉️ trinitygreenenergy3@gmail.com
+            </a>
+
+            <p>
+                📍 House No. 55, Assandh Road,
+                Arya Nagar, Panipat,
+                Haryana 132103, India
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="copyright">
+
+        © 2026 TrinityGreen Energy.
+        All rights reserved.
+
+    </div>
+
+</footer>
+
+<script type="module" src="solution.js"></script>
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+
+const $ = (id) => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const SOLUTIONS = ["residential", "commercial", "industrial", "hybrid", "other"];
+const type = params.get("type");
+if (SOLUTIONS.includes(type)) $("fSolution").value = type;
+const billParam = parseFloat(params.get("bill"));
+if (billParam > 0) $("fBill").value = Math.round(billParam);
+
+let currentUser = null;
+
+// If the customer is logged in, fill in what we already know
+onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    if (!user) return;
+    if (user.email && !$("fEmail").value) $("fEmail").value = user.email;
+    try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+            const d = snap.data();
+            if (d.name && !$("fName").value) $("fName").value = d.name;
+            if (d.mobile && !$("fMobile").value) $("fMobile").value = d.mobile;
+            if (d.email && !$("fEmail").value) $("fEmail").value = d.email;
+        }
+    } catch (err) {
+        console.error("Could not load profile:", err);
+    }
+});
+
+function cleanMobile(raw) {
+    let d = String(raw).replace(/[\s\-()]/g, "");
+    if (d.startsWith("+91")) d = d.slice(3);
+    else if (d.startsWith("91") && d.length === 12) d = d.slice(2);
+    else if (d.startsWith("0") && d.length === 11) d = d.slice(1);
+    return /^[6-9]\d{9}$/.test(d) ? d : null;
+}
+
+$("enqForm").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const err = $("enqErr");
+    err.textContent = "";
+
+    // Spam trap: real people never fill this hidden box
+    if ($("fWeb").value) { showDone(); return; }
+
+    const name = $("fName").value.trim();
+    const mobile = cleanMobile($("fMobile").value);
+    const email = $("fEmail").value.trim();
+    const city = $("fCity").value.trim();
+    const billRaw = $("fBill").value.trim();
+    const bill = billRaw === "" ? null : Number(billRaw);
+
+    if (name.length < 2) { err.textContent = "Please enter your full name."; return; }
+    if (!mobile) { err.textContent = "Please enter a valid 10-digit mobile number."; return; }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = "That email address does not look right."; return; }
+    if (city.length < 2) { err.textContent = "Please enter your city or town."; return; }
+    if (bill !== null && !(bill >= 0 && bill <= 100000000)) { err.textContent = "Please check the monthly bill amount."; return; }
+    if (!$("fConsent").checked) { err.textContent = "Please tick the box so we can contact you."; return; }
+
+    const btn = $("enqBtn");
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+
+    try {
+        await addDoc(collection(db, "enquiries"), {
+            uid: currentUser ? currentUser.uid : null,
+            name: name,
+            mobile: mobile,
+            email: email,
+            city: city,
+            solution: $("fSolution").value,
+            monthlyBill: bill,
+            callTime: $("fTime").value,
+            message: $("fMsg").value.trim(),
+            status: "new",
+            createdAt: serverTimestamp()
+        });
+        showDone();
+    } catch (e) {
+        console.error("Enquiry failed:", e);
+        err.textContent = "Sorry, we could not send this. Please try again, or call us on 86079 71755.";
+        btn.disabled = false;
+        btn.textContent = "Send Enquiry";
+    }
+});
+
+function showDone() {
+    $("enqFormBox").hidden = true;
+    $("enqDone").hidden = false;
+    if (currentUser) {
+        $("doneBtn1").textContent = "Go to My Dashboard";
+        $("doneBtn1").href = "dashboard.html";
+    } else {
+        $("doneBtn1").textContent = "Create a Free Account";
+        $("doneBtn1").href = "signup.html";
+        $("enqDoneText").textContent = "One of our team will call you soon. You can also create a free account to follow your project with us.";
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+</script>
+</body>
+</html>
